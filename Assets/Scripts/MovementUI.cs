@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MovementUI : MonoBehaviour
 {
-    [SerializeField] private MoveModule moveModule;
+    [SerializeField] private OneDimensionMover moveModule;
 
     [SerializeField] private TextMeshProUGUI speedMeter;
 
