@@ -8,9 +8,9 @@ public class OneDimensionMover : MonoBehaviour
 
     [SerializeField] private AirDrag airDrag;
 
-    [SerializeField] private float acceleration;
+    [SerializeField] private float accelerationA;
 
-    [SerializeField] private float finalVelocity;
+    private float finalVelocity;
 
     public float FinalVelocity => finalVelocity;
 
@@ -36,9 +36,13 @@ public class OneDimensionMover : MonoBehaviour
     {
         float initialVelocity = finalVelocity;
 
-        float airDragValue = airDrag.GetAirDrag(finalVelocity);
+        float deltaVA = kinematicEquations.FinalVelocity_1(initialVelocity: initialVelocity, acceleration: accelerationA, deltaTime: Time.deltaTime) - initialVelocity;
 
-        finalVelocity = kinematicEquations.FinalVelocity_1(initialVelocity: initialVelocity, acceleration: acceleration, airDrag: airDragValue, deltaTime: Time.deltaTime);
+        float airDragAcceleration = airDrag.GetAirDragAcceleration(finalVelocity);
+
+        float deltaVB = kinematicEquations.FinalVelocity_1(initialVelocity: initialVelocity, acceleration: airDragAcceleration, deltaTime: Time.deltaTime) - initialVelocity;
+
+        finalVelocity += deltaVA + deltaVB;
 
         float deltaX = kinematicEquations.DeltaX_2(finalVelocity: finalVelocity, initialVelocity: initialVelocity, deltaTime: Time.deltaTime);
 

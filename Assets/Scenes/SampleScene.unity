@@ -786,8 +786,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kinematicEquations: {fileID: 1063309581}
   airDrag: {fileID: 1063309587}
-  acceleration: 2
-  finalVelocity: 0
+  accelerationA: 3
   dimension: 2
 --- !u!114 &1063309587
 MonoBehaviour:
