@@ -6,9 +6,9 @@ public class KinematicEquations : MonoBehaviour
 {
     // First kinematic equation: vf = vi + a*t
 
-    public float FinalVelocity_1(float initialVelocity, float acceleration, float deltaTime)
+    public float FinalVelocity_1(float initialVelocity, float acceleration, float airDrag, float deltaTime)
     {
-        float result = initialVelocity + acceleration * deltaTime;
+        float result = initialVelocity + (acceleration - airDrag) * deltaTime;
         return result;
     }
 

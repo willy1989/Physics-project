@@ -641,11 +641,11 @@ GameObject:
   - component: {fileID: 1063309579}
   - component: {fileID: 1063309578}
   - component: {fileID: 1063309581}
-  - component: {fileID: 1063309582}
   - component: {fileID: 1063309586}
   - component: {fileID: 1063309584}
   - component: {fileID: 1063309583}
   - component: {fileID: 1063309585}
+  - component: {fileID: 1063309587}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -711,7 +711,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1063309577}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 13.6, z: -0.500002}
+  m_LocalPosition: {x: 0, y: 1, z: -0.500002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -731,21 +731,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3dcb49b3d65be64fb192895dd2dcbb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1063309582
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1063309577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc4b9f118d1bb484c966b952039a2559, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  kinematicEquations: {fileID: 1063309581}
-  acceleration: 1
-  dimension: 2
 --- !u!54 &1063309583
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -800,8 +785,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   kinematicEquations: {fileID: 1063309581}
-  acceleration: -9.81
-  dimension: 1
+  airDrag: {fileID: 1063309587}
+  acceleration: 2
+  finalVelocity: 0
+  dimension: 2
+--- !u!114 &1063309587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063309577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf3f69cf769b03140ab14bd7811d6522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  airDragCoefficient: 0.25
 --- !u!1 &1147500748
 GameObject:
   m_ObjectHideFlags: 0
@@ -984,7 +984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878bf4a93f883db46b3133373a1eb642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveModule: {fileID: 1063309582}
+  moveModule: {fileID: 1063309586}
   speedMeter: {fileID: 352274133}
 --- !u!1 &1715250099
 GameObject:
