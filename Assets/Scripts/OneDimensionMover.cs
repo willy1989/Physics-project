@@ -38,9 +38,11 @@ public class OneDimensionMover : MonoBehaviour
 
         float deltaVA = kinematicEquations.FinalVelocity_1(initialVelocity: initialVelocity, acceleration: accelerationA, deltaTime: Time.deltaTime) - initialVelocity;
 
+
         float airDragAcceleration = airDrag.GetAirDragAcceleration(finalVelocity);
 
         float deltaVB = kinematicEquations.FinalVelocity_1(initialVelocity: initialVelocity, acceleration: airDragAcceleration, deltaTime: Time.deltaTime) - initialVelocity;
+
 
         finalVelocity += deltaVA + deltaVB;
 
