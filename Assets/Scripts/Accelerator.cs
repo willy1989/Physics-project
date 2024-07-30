@@ -12,9 +12,4 @@ public class Accelerator : MonoBehaviour
     {
         return acceleration;
     }
-
-    public float FinalVelocity(float initialVelocity)
-    {
-        return kinematicEquations.FinalVelocity_1(initialVelocity: initialVelocity, acceleration: acceleration, deltaTime: Time.deltaTime);
-    }
 }

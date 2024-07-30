@@ -16,6 +16,6 @@ public class MovementUI : MonoBehaviour
 
     private void UpdateSpeedMeter()
     {
-        speedMeter.text = moveModule.FinalVelocity.ToString("F2") + " m/s";
+        speedMeter.text = moveModule.FinalVelocityUI.ToString("F2") + " m/s";
     }
 }

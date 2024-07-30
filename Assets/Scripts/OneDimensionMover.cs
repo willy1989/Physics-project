@@ -6,31 +6,36 @@ public class OneDimensionMover : MonoBehaviour
 {
     [SerializeField] private KinematicEquations kinematicEquations;
 
-    [SerializeField] private Accelerator accelerator;
+    [SerializeField] private float acceleration;
 
-    [SerializeField] private AirDrag airDrag;
+    [SerializeField] private float airDragCoefficient;
 
     private float finalVelocity;
 
-    public float FinalVelocity => finalVelocity;
+    public float FinalVelocityUI => finalVelocity;
 
     [SerializeField] private DirectionDimension dimension;
 
     private void Update()
     {
-        MoveObject();
-    }
-
-    private void MoveObject()
-    {
         float initialVelocity = finalVelocity;
 
-        float acceleration = accelerator.GetAcceleration() + airDrag.GetAirDragAcceleration(initialVelocity);
+        float totalAcceleration = acceleration + AirDragAcceleration(initialVelocity);
 
-        finalVelocity = kinematicEquations.FinalVelocity_1(initialVelocity: initialVelocity, acceleration: acceleration, deltaTime: Time.deltaTime);
+        finalVelocity = kinematicEquations.FinalVelocity_1(initialVelocity: initialVelocity, acceleration: totalAcceleration, deltaTime: Time.deltaTime);
 
         float deltaX = kinematicEquations.DeltaX_2(finalVelocity: finalVelocity, initialVelocity: initialVelocity, deltaTime: Time.deltaTime);
 
+        MoveObject(deltaX);
+    }
+
+    private float AirDragAcceleration(float initialVelocity)
+    {
+        return -initialVelocity * airDragCoefficient;
+    }
+
+    private void MoveObject(float deltaX)
+    {
         this.transform.position += GetDirectionVector() * deltaX;
     }
 
