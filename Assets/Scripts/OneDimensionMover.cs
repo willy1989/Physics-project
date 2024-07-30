@@ -6,26 +6,15 @@ public class OneDimensionMover : MonoBehaviour
 {
     [SerializeField] private KinematicEquations kinematicEquations;
 
-    [SerializeField] private AirDrag airDrag;
+    [SerializeField] private Accelerator accelerator;
 
-    [SerializeField] private float accelerationA;
+    [SerializeField] private AirDrag airDrag;
 
     private float finalVelocity;
 
     public float FinalVelocity => finalVelocity;
 
     [SerializeField] private DirectionDimension dimension;
-
-    private Vector3 directionVector;
-
-    private Transform objectToMove;
-
-    private void Awake()
-    {
-        objectToMove = this.transform;
-
-        directionVector = GetDirectionVector();
-    }
 
     private void Update()
     {
@@ -36,19 +25,13 @@ public class OneDimensionMover : MonoBehaviour
     {
         float initialVelocity = finalVelocity;
 
-        float deltaVA = kinematicEquations.FinalVelocity_1(initialVelocity: initialVelocity, acceleration: accelerationA, deltaTime: Time.deltaTime) - initialVelocity;
+        float acceleration = accelerator.GetAcceleration() + airDrag.GetAirDragAcceleration(initialVelocity);
 
-
-        float airDragAcceleration = airDrag.GetAirDragAcceleration(finalVelocity);
-
-        float deltaVB = kinematicEquations.FinalVelocity_1(initialVelocity: initialVelocity, acceleration: airDragAcceleration, deltaTime: Time.deltaTime) - initialVelocity;
-
-
-        finalVelocity += deltaVA + deltaVB;
+        finalVelocity = kinematicEquations.FinalVelocity_1(initialVelocity: initialVelocity, acceleration: acceleration, deltaTime: Time.deltaTime);
 
         float deltaX = kinematicEquations.DeltaX_2(finalVelocity: finalVelocity, initialVelocity: initialVelocity, deltaTime: Time.deltaTime);
 
-        objectToMove.position += directionVector * deltaX;
+        this.transform.position += GetDirectionVector() * deltaX;
     }
 
     private Vector3 GetDirectionVector()
