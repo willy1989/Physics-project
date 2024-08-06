@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OneDimensionMover : MonoBehaviour
+public class OneDimensionAccelerationMover : MonoBehaviour
 {
     [SerializeField] private KinematicEquations kinematicEquations;
 
@@ -12,7 +12,7 @@ public class OneDimensionMover : MonoBehaviour
 
     private float finalVelocity;
 
-    public float FinalVelocityUI => finalVelocity;
+    public float FinalVelocity => finalVelocity;
 
     [SerializeField] private DirectionDimension dimension;
 

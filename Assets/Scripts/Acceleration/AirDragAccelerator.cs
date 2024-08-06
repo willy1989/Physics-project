@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AirDrag : MonoBehaviour
+public class AirDragAccelerator : MonoBehaviour
 {
     [SerializeField] private KinematicEquations kinematicEquations;
 
@@ -10,7 +10,7 @@ public class AirDrag : MonoBehaviour
 
     [SerializeField] private DirectionDimension dimension;
 
-    [SerializeField] private OneDimensionMover oneDimensionMover;
+    [SerializeField] private OneDimensionAccelerationMover oneDimensionMover;
 
 
     private void Update()
@@ -20,7 +20,7 @@ public class AirDrag : MonoBehaviour
 
     private void Main()
     {
-        float initialVelocity = oneDimensionMover.FinalVelocityUI;
+        float initialVelocity = oneDimensionMover.FinalVelocity;
 
         float acceleration = Acceleration(initialVelocity);
 

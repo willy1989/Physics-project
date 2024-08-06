@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Accelerator : MonoBehaviour
+public class BasicAccelerator : MonoBehaviour
 {
     [SerializeField] private KinematicEquations kinematicEquations;
 

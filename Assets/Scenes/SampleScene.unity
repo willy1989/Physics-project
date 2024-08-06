@@ -123,52 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &309230375
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 309230376}
-  - component: {fileID: 309230377}
-  m_Layer: 0
-  m_Name: Accelerator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &309230376
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 309230375}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1063309580}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &309230377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 309230375}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc53b3687349aa7428b9f47e8aef9845, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  kinematicEquations: {fileID: 1910118864}
-  acceleration: 3
 --- !u!1 &352274131
 GameObject:
   m_ObjectHideFlags: 0
@@ -686,7 +640,6 @@ GameObject:
   - component: {fileID: 1063309580}
   - component: {fileID: 1063309579}
   - component: {fileID: 1063309578}
-  - component: {fileID: 1063309586}
   - component: {fileID: 1063309585}
   - component: {fileID: 1063309584}
   - component: {fileID: 1063309583}
@@ -760,7 +713,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1867199537}
-  - {fileID: 309230376}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -805,22 +757,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77f2ec5026e1df0438281e85eb3da2bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1063309586
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1063309577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc4b9f118d1bb484c966b952039a2559, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  kinematicEquations: {fileID: 1910118864}
-  acceleration: 3
-  airDragCoefficient: 0.25
-  dimension: 2
 --- !u!1 &1147500748
 GameObject:
   m_ObjectHideFlags: 0
@@ -1003,7 +939,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878bf4a93f883db46b3133373a1eb642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveModule: {fileID: 1063309586}
+  moveModule: {fileID: 0}
   speedMeter: {fileID: 352274133}
 --- !u!1 &1715250099
 GameObject:
@@ -1170,7 +1106,6 @@ GameObject:
   - component: {fileID: 1867199537}
   - component: {fileID: 1867199540}
   - component: {fileID: 1867199539}
-  - component: {fileID: 1867199538}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -1193,19 +1128,6 @@ Transform:
   m_Father: {fileID: 1063309580}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1867199538
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1867199536}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1867199539
 MeshRenderer:
   m_ObjectHideFlags: 0
