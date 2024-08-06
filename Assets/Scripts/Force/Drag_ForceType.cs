@@ -8,8 +8,8 @@ public class Drag_ForceType : ForceType
 
     [SerializeField] private float dragCoefficient;
 
-    public override float Force()
+    public override Vector3 Force()
     {
-        return oneDimensionForceApplier.FinalVelocity * dragCoefficient;
+        return -oneDimensionForceApplier.FinalVelocity * dragCoefficient;
     }
 }

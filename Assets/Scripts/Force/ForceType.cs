@@ -4,5 +4,5 @@ using UnityEngine;
 
 public abstract class ForceType : MonoBehaviour
 {
-    public abstract float Force();
+    public abstract Vector3 Force();
 }

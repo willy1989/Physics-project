@@ -8,17 +8,15 @@ public class OneDimensionForceApplier : MonoBehaviour
 
     [SerializeField] private StopClock stopClock;
 
-    [SerializeField] private Constant_ForceType constantForceType;
-
-    [SerializeField] private Drag_ForceType dragForceType;
+    [SerializeField] private ForceType[] forceTypes;
 
     [SerializeField] private float mass;
 
-    private float finalVelocity;
+    private Vector3 finalVelocity;
 
-    public float FinalVelocity => finalVelocity;
+    public Vector3 FinalVelocity => finalVelocity;
 
-    [SerializeField] private DirectionDimension dimension;
+   
 
     private void Awake()
     {
@@ -28,44 +26,39 @@ public class OneDimensionForceApplier : MonoBehaviour
     private void Update()
     {
         // F = m * a, so a = F/m
-        float initialVelocity = finalVelocity;
+        Vector3 initialVelocity = finalVelocity;
 
-        float combinedForces = constantForceType.Force() - dragForceType.Force();
-        float acceleration = combinedForces / mass;
+        Vector3 combinedForces = Vector3.zero;
 
-        finalVelocity = kinematicEquations.FinalVelocity_1(initialVelocity, acceleration, Time.deltaTime);
+        foreach (var forceType in forceTypes)
+        {
+            combinedForces += forceType.Force();
+        }
 
-        float displacement = kinematicEquations.DeltaX_2(finalVelocity, initialVelocity, Time.deltaTime);
+        Vector3 acceleration = combinedForces / mass;
 
-        transform.position += GetDirectionUnitVector() * displacement;
+
+        float finalVelocityX = kinematicEquations.FinalVelocity_1(initialVelocity.x, acceleration.x, Time.deltaTime);
+        float finalVelocityY = kinematicEquations.FinalVelocity_1(initialVelocity.y, acceleration.y, Time.deltaTime);
+        float finalVelocityZ = kinematicEquations.FinalVelocity_1(initialVelocity.z, acceleration.z, Time.deltaTime);
+
+
+        finalVelocity = new Vector3(finalVelocityX, finalVelocityY, finalVelocityZ);
+
+        float displacementX = kinematicEquations.DeltaX_2(finalVelocity.x, initialVelocity.x, Time.deltaTime);
+        float displacementY = kinematicEquations.DeltaX_2(finalVelocity.y, initialVelocity.y, Time.deltaTime);
+        float displacementZ = kinematicEquations.DeltaX_2(finalVelocity.z, initialVelocity.z, Time.deltaTime);
+
+        Vector3 displacement = new Vector3(displacementX, displacementY, displacementZ);
+
+        transform.position += displacement;
 
     }
 
     private void LogFinalVelocity()
     {
-        Debug.Log("Final velocity: " + finalVelocity);
+        Debug.Log("Final velocity: " + finalVelocity.magnitude);
     }
 
-    private Vector3 GetDirectionUnitVector()
-    {
-        if (dimension == DirectionDimension.X)
-            return new Vector3(1f, 0f, 0f);
 
-        else if (dimension == DirectionDimension.Y)
-            return new Vector3(0f, 1f, 0f);
-
-        else if (dimension == DirectionDimension.Z)
-            return new Vector3(0f, 0f, 1f);
-
-        Debug.LogError("Couldn't map DirectionDimension enum to a direction.");
-
-        return Vector3.zero;
-    }
-
-    private enum DirectionDimension
-    {
-        X,
-        Y,
-        Z
-    }
 }
