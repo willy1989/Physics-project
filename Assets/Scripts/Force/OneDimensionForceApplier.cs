@@ -12,6 +12,8 @@ public class OneDimensionForceApplier : MonoBehaviour
 
     [SerializeField] private float mass;
 
+    public float Mass => mass;
+
     private Vector3 finalVelocity;
 
     public Vector3 FinalVelocity => finalVelocity;
