@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MovementUI : MonoBehaviour
 {
-    [SerializeField] private OneDimensionAccelerationMover moveModule;
+    [SerializeField] private OneDimensionForceApplier oneDimensionForceApplier;
 
     [SerializeField] private TextMeshProUGUI speedMeter;
 
@@ -16,6 +16,6 @@ public class MovementUI : MonoBehaviour
 
     private void UpdateSpeedMeter()
     {
-        speedMeter.text = moveModule.FinalVelocity.ToString("F2") + " m/s";
+        speedMeter.text = oneDimensionForceApplier.FinalVelocity.ToString("F2") + " m/s";
     }
 }

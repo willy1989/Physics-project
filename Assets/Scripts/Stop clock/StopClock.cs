@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,8 @@ public class StopClock : MonoBehaviour
     private float elapsedTime = 0f;
 
     private bool clockRunning = false;
+
+    public Action clockStopedEvent;
 
     private void Update()
     {
@@ -38,6 +41,7 @@ public class StopClock : MonoBehaviour
         {
             Debug.Log("Stopping clock.");
             Debug.Log("Time: " + elapsedTime);
+            clockStopedEvent?.Invoke();
             ResetClock();
         }
     }
