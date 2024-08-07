@@ -8,6 +8,12 @@ public class Constant_ForceType : ForceType
 
     [SerializeField] private DirectionDimension dimension;
 
+    public void SetUp(float _force, DirectionDimension _dimension)
+    {
+        force = _force;
+        dimension = _dimension;
+    }
+
     private Vector3 GetDirectionUnitVector()
     {
         if (dimension == DirectionDimension.XPOSITIVE)
@@ -33,18 +39,18 @@ public class Constant_ForceType : ForceType
         return Vector3.zero;
     }
 
-    private enum DirectionDimension
-    {
-        XPOSITIVE,
-        YPOSITIVE,
-        ZPOSITIVE,
-        XNEGATIVE,
-        YNEGATIVE,
-        ZNEGATIVE
-    }
-
     public override Vector3 Force()
     {
         return force * GetDirectionUnitVector();
     }
+}
+
+public enum DirectionDimension
+{
+    XPOSITIVE,
+    YPOSITIVE,
+    ZPOSITIVE,
+    XNEGATIVE,
+    YNEGATIVE,
+    ZNEGATIVE
 }

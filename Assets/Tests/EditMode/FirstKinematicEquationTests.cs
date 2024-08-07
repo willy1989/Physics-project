@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace Editor
 {
-    public class FirstKinematicEquationsTests
+    public class FirstKinematicEquationTests
     {
         protected KinematicEquations kinematicEquationComponent;
 
@@ -20,7 +20,7 @@ namespace Editor
             kinematicEquationComponent = someGameobject.AddComponent<KinematicEquations>();
         }
 
-        public class FinalVelocityMethod : FirstKinematicEquationsTests
+        public class FinalVelocityMethod : FirstKinematicEquationTests
         {
             [Test]
             public void Input_InitialVelocity_00_Acceleration_01_DeltaTime_01_Output_01()
@@ -64,7 +64,7 @@ namespace Editor
 
         }
 
-        public class InitialVelocityMethod : FirstKinematicEquationsTests
+        public class InitialVelocityMethod : FirstKinematicEquationTests
         {
             [Test]
             public void Input_FinalVelocity_01_Acceleration01_DeltaTime_01_Output_00()

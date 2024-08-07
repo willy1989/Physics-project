@@ -6,8 +6,6 @@ public class OneDimensionForceApplier : MonoBehaviour
 {
     [SerializeField] private KinematicEquations kinematicEquations;
 
-    [SerializeField] private StopClock stopClock;
-
     [SerializeField] private ForceType[] forceTypes;
 
     [SerializeField] private float mass;
@@ -18,12 +16,13 @@ public class OneDimensionForceApplier : MonoBehaviour
 
     public Vector3 FinalVelocity => finalVelocity;
 
-   
-
-    private void Awake()
+    public void SetUp(KinematicEquations _kinematicEquations, ForceType[] _forceTypes, float _mass)
     {
-        stopClock.clockStopedEvent += LogFinalVelocity;
+        kinematicEquations = _kinematicEquations;
+        forceTypes = _forceTypes;
+        mass = _mass;
     }
+
 
     private void Update()
     {
@@ -56,11 +55,4 @@ public class OneDimensionForceApplier : MonoBehaviour
         transform.position += displacement;
 
     }
-
-    private void LogFinalVelocity()
-    {
-        Debug.Log("Final velocity: " + finalVelocity.magnitude);
-    }
-
-
 }
