@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,11 @@ public class KinematicEquations : MonoBehaviour
 
     public float FinalVelocity_1(float initialVelocity, float acceleration, float deltaTime)
     {
+        if(deltaTime< 0.0f) 
+        { 
+            throw new ArgumentException("'DeltaTime' cannot be negative.");
+        }
+
         float result = initialVelocity + (acceleration) * deltaTime;
         return result;
     }
