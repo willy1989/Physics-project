@@ -14,6 +14,8 @@ public class FirstKinematicEquationTests
 
         private GameObject physicsObject;
 
+
+
         [SetUp]
         public void SetUpTest()
         {
@@ -35,16 +37,11 @@ public class FirstKinematicEquationTests
 
             oneDimensionForceApplier.SetUp(_kinematicEquations: kinematicEquationsComponent, _forceTypes: new ForceType[] { constantForceComponent }, _mass: 1);
 
-            float elapsedTime = 0;
-            float duration = 2f;
-
-            while(elapsedTime < duration)
-            {
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
-
             Application.targetFrameRate = 60;
+
+            TimerComponent timerComponent = new GameObject().AddComponent<TimerComponent>();
+
+            yield return timerComponent.StartTimer(duration: 2f);
 
 
             // Assert
@@ -67,14 +64,9 @@ public class FirstKinematicEquationTests
 
             oneDimensionForceApplier.SetUp(_kinematicEquations: kinematicEquationsComponent, _forceTypes: new ForceType[] { constantForceComponent }, _mass: 1);
 
-            float elapsedTime = 0;
-            float duration = 2f;
+            TimerComponent timerComponent = new GameObject().AddComponent<TimerComponent>();
 
-            while (elapsedTime < duration)
-            {
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
+            yield return timerComponent.StartTimer(duration: 2f);
 
             Application.targetFrameRate = 30;
 
@@ -99,14 +91,9 @@ public class FirstKinematicEquationTests
 
             oneDimensionForceApplier.SetUp(_kinematicEquations: kinematicEquationsComponent, _forceTypes: new ForceType[] { constantForceComponent }, _mass: 2);
 
-            float elapsedTime = 0;
-            float duration = 10f;
+            TimerComponent timerComponent = new GameObject().AddComponent<TimerComponent>();
 
-            while (elapsedTime < duration)
-            {
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
+            yield return timerComponent.StartTimer(duration: 10f);
 
             Application.targetFrameRate = 60;
 
@@ -130,15 +117,10 @@ public class FirstKinematicEquationTests
             OneDimensionForceApplier oneDimensionForceApplier = physicsObject.AddComponent<OneDimensionForceApplier>();
 
             oneDimensionForceApplier.SetUp(_kinematicEquations: kinematicEquationsComponent, _forceTypes: new ForceType[] { constantForceComponent }, _mass: 5);
+            
+            TimerComponent timerComponent = new GameObject().AddComponent<TimerComponent>();
 
-            float elapsedTime = 0;
-            float duration = 3f;
-
-            while (elapsedTime < duration)
-            {
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
+            yield return timerComponent.StartTimer(duration: 3f);
 
             Application.targetFrameRate = 60;
 
