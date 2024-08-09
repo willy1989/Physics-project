@@ -14,7 +14,7 @@ public class KinematicEquations : MonoBehaviour
             throw new ArgumentException("'DeltaTime' cannot be negative.");
         }
 
-        float result = initialVelocity + (acceleration) * deltaTime;
+        float result = initialVelocity + acceleration * deltaTime;
         return result;
     }
 
@@ -37,7 +37,7 @@ public class KinematicEquations : MonoBehaviour
             throw new ArgumentException("'DeltaTime' cannot be negative.");
         }
 
-        float result = (finalVelocity - initialVelocity)/ deltaTime;
+        float result = (finalVelocity - initialVelocity) / deltaTime;
 
         return result;
     }
