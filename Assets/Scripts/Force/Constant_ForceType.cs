@@ -41,7 +41,9 @@ public class Constant_ForceType : ForceType
 
     public override Vector3 Force()
     {
-        return force * GetDirectionUnitVector();
+        Vector3 result = force * GetDirectionUnitVector();
+
+        return result;
     }
 }
 
