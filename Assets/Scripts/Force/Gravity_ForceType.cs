@@ -8,6 +8,8 @@ public class Gravity_ForceType : ForceType
 
     public override Vector3 Force()
     {
-        return Vector3.down * 9.81f * oneDimensionForceApplier.Mass;
+        Vector3 result = Vector3.down * 9.81f * oneDimensionForceApplier.Mass;
+
+        return result;
     }
 }
