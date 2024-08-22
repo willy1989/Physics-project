@@ -8,22 +8,22 @@ namespace PhysicsObject
     {
         private float kineticFrictionCoefficient;
 
-        private NormalForce_ForceType normalForce;
+        private Vector3 normalForce;
 
-        private PhysicsObject physicsObject;
+        private Vector3 direction;
 
-        public KineticFriction_ForceType(float _kineticFrictionCoefficient, NormalForce_ForceType _normalForce, PhysicsObject _physicsObject)
+        public KineticFriction_ForceType(float _kineticFrictionCoefficient, Vector3 _normalForce, Vector3 _direction)
         {
             this.kineticFrictionCoefficient = _kineticFrictionCoefficient;
             this.normalForce = _normalForce;
-            this.physicsObject = _physicsObject;
+            this.direction = _direction;
         }
 
         public override Vector3 Force()
         {
-            float kineticFrictionForceMagnitude = normalForce.Force().magnitude * kineticFrictionCoefficient;
+            float kineticFrictionForceMagnitude = normalForce.magnitude * kineticFrictionCoefficient;
 
-            Vector3 directionVector = -physicsObject.FinalVelocity.normalized;
+            Vector3 directionVector = -direction.normalized;
 
             Vector3 result = directionVector * kineticFrictionForceMagnitude;
 

@@ -6,16 +6,21 @@ namespace PhysicsObject
 {
     public class NormalForce_ForceType : ForceType
     {
-        private Gravity_ForceType gravityForce;
+        private Vector3 pushForce;
 
-        public NormalForce_ForceType(Gravity_ForceType _gravityForce)
+        public NormalForce_ForceType(Vector3 _pushForce)
         {
-            gravityForce = _gravityForce;
+            this.pushForce = _pushForce;
         }
 
         public override Vector3 Force()
         {
-            return -gravityForce.Force();
+            Vector3 result = Vector3.zero;
+
+            if (pushForce.y < 0)
+                result = new Vector3(0f, -pushForce.y, 0f);
+
+            return result;
         }
     }
 }

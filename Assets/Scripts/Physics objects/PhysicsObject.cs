@@ -8,6 +8,8 @@ namespace PhysicsObject
     {
         [SerializeField] private KinematicEquations kinematicEquations;
 
+        [SerializeField] private ContactCollidersManager contactCollidersManager;
+
         [SerializeField] private float mass;
 
         public float Mass => mass;
@@ -16,75 +18,90 @@ namespace PhysicsObject
 
         public Vector3 FinalVelocity => finalVelocity;
 
-        private List<ForceType> forceTypes = new List<ForceType>();
-
-        private void Start()
-        {
-            Constant_ForceType zConstantForceType = new Constant_ForceType(_constantForce: 1f, new Vector3(0f, 0f, 1f));
-
-            forceTypes.Add(zConstantForceType);
-
-            Gravity_ForceType gravityForceType = new Gravity_ForceType(_physicsObject: this);
-
-            forceTypes.Add(gravityForceType);
-
-            NormalForce_ForceType normalForce = new NormalForce_ForceType(gravityForceType);
-
-            forceTypes.Add(normalForce);
-
-            KineticFriction_ForceType kineticFrictionForce = new KineticFriction_ForceType(_kineticFrictionCoefficient:0.05f,_normalForce: normalForce, _physicsObject: this);
-
-            forceTypes.Add(kineticFrictionForce);
-
-        }
 
         private void Update()
         {
-            ApplyForces();
+            Vector3 noConstraintsForces = NoConstraintsForces();
+            ApplyForces(noConstraintsForces + NormalAndContactForces(noConstraintsForces));
         }
 
-
-        private void ApplyForces()
-        {
-            // F = m * a, so a = F/m
-            
-
-            Vector3 combinedForces = CombinedForces();
-
-            Vector3 acceleration = combinedForces / mass;
-
-            Vector3 initialVelocity = finalVelocity;
-
-            finalVelocity = ComputeFinalVelocity(initialVelocity, acceleration);
-
-            float displacementX = kinematicEquations.DeltaX_2(finalVelocity.x, initialVelocity.x, Time.deltaTime);
-            float displacementY = kinematicEquations.DeltaX_2(finalVelocity.y, initialVelocity.y, Time.deltaTime);
-            float displacementZ = kinematicEquations.DeltaX_2(finalVelocity.z, initialVelocity.z, Time.deltaTime);
-
-            Vector3 displacement = new Vector3(displacementX, displacementY, displacementZ);
-
-            transform.position += displacement;
-        }
-
-        private Vector3 CombinedForces()
+        private Vector3 NoConstraintsForces()
         {
             Vector3 result = Vector3.zero;
 
-            foreach (var forceType in forceTypes)
+            Constant_ForceType zConstantForceType = new Constant_ForceType(_constantForce: 1f, new Vector3(0f, 0f, 1f));
+
+            Gravity_ForceType gravityForceType = new Gravity_ForceType(_physicsObject: this);
+
+            result += zConstantForceType.Force();
+
+            result += gravityForceType.Force();
+
+            return result;
+        }
+
+        private Vector3 NormalAndContactForces(Vector3 noConstraintsForces)
+        {
+            // Forces with no constraints
+            Vector3 result = Vector3.zero;
+
+            // Normal forces
+
+            if(contactCollidersManager.IsInContact == false)
+                return result;
+
+            NormalForce_ForceType normalForce = new NormalForce_ForceType(noConstraintsForces);
+            result += normalForce.Force();
+
+            // Friction forces
+            if (FinalVelocity.magnitude == 0f)
+                return result;
+
+            FrictionCollider frictionCollider = contactCollidersManager.GetFrictionCollider();
+
+            if (frictionCollider != null)
             {
-                result += forceType.Force();
+                KineticFriction_ForceType kineticFriction_ForceType = new KineticFriction_ForceType(_kineticFrictionCoefficient:frictionCollider.FrictionCoefficient(), 
+                                                                                                    _normalForce: normalForce.Force(), 
+                                                                                                    _direction:FinalVelocity);
+
+                result += kineticFriction_ForceType.Force();
             }
 
             return result;
         }
 
-        private Vector3 ComputeFinalVelocity(Vector3 initialVelocity, Vector3 acceleration)
+        private void ApplyForces(Vector3 combinedForces)
+        {
+            Vector3 acceleration = combinedForces / mass;
+
+            Vector3 initialVelocity = finalVelocity;
+
+            finalVelocity = ComputedFinalVelocity(initialVelocity, acceleration);
+
+            Vector3 displacement = Displacement(initialVelocity, finalVelocity);
+
+            transform.position += displacement;
+        }
+
+        private Vector3 ComputedFinalVelocity(Vector3 initialVelocity, Vector3 acceleration)
         {
             float finalVelocityX = kinematicEquations.FinalVelocity_1(initialVelocity.x, acceleration.x, Time.deltaTime);
             float finalVelocityY = kinematicEquations.FinalVelocity_1(initialVelocity.y, acceleration.y, Time.deltaTime);
             float finalVelocityZ = kinematicEquations.FinalVelocity_1(initialVelocity.z, acceleration.z, Time.deltaTime);
 
             Vector3 result = new Vector3(finalVelocityX, finalVelocityY, finalVelocityZ);
+
+            return result;
+        }
+
+        private Vector3 Displacement(Vector3 initialVelocity, Vector3 finalVelocity)
+        {
+            float displacementX = kinematicEquations.DeltaX_2(finalVelocity.x, initialVelocity.x, Time.deltaTime);
+            float displacementY = kinematicEquations.DeltaX_2(finalVelocity.y, initialVelocity.y, Time.deltaTime);
+            float displacementZ = kinematicEquations.DeltaX_2(finalVelocity.z, initialVelocity.z, Time.deltaTime);
+
+            Vector3 result = new Vector3(displacementX, displacementY, displacementZ);
 
             return result;
         }
