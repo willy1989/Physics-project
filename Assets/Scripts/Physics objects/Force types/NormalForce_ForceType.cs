@@ -8,17 +8,35 @@ namespace PhysicsObject
     {
         private Vector3 pushForce;
 
-        public NormalForce_ForceType(Vector3 _pushForce)
+        private Vector3 surfaceNormal;
+
+        public NormalForce_ForceType(Vector3 _pushForce, Vector3 _surfaceNormal)
         {
             this.pushForce = _pushForce;
+            this.surfaceNormal = _surfaceNormal;
         }
 
         public override Vector3 Force()
         {
-            Vector3 result = Vector3.zero;
+            // Angle between surface normal and push force
+            float angleRadians = AngleInRadiansFromVectors(pushForce, -surfaceNormal);
 
-            if (pushForce.y < 0)
-                result = new Vector3(0f, -pushForce.y, 0f);
+            float angleDegrees = Mathf.Rad2Deg * angleRadians;
+
+            float normalForceMagnitude = Mathf.Cos(angleRadians) * pushForce.magnitude;
+
+            Vector3 result = surfaceNormal * normalForceMagnitude;
+
+            return result;
+        }
+
+        private float AngleInRadiansFromVectors(Vector3 vectorA, Vector3 vectorB)
+        {
+            float dotProduct = vectorA.x * vectorB.x + vectorA.y * vectorB.y + vectorA.z * vectorB.z;
+
+            float multipliedMagnitudes = vectorA.magnitude * vectorB.magnitude;
+
+            float result = Mathf.Acos(dotProduct / multipliedMagnitudes);
 
             return result;
         }

@@ -16,14 +16,26 @@ public class ContactCollidersManager : MonoBehaviour
 
     public FrictionCollider GetFrictionCollider()
     {
-        FrictionCollider frictionCollider = null;
+        FrictionCollider result = null;
 
         foreach (Collider collider in contactColliders)
         {
-            frictionCollider = collider.GetComponent<FrictionCollider>();
+            result = collider.GetComponent<FrictionCollider>();
         }
 
-        return frictionCollider;
+        return result;
+    }
+
+    public NormalForceCollider GetNormalForceCollider()
+    {
+        NormalForceCollider result = null;
+
+        foreach (Collider collider in contactColliders)
+        {
+            result = collider.GetComponent<NormalForceCollider>();
+        }
+
+        return result;
     }
 
     private void OnTriggerEnter(Collider other)

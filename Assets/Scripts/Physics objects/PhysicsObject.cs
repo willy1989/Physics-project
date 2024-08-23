@@ -36,7 +36,7 @@ namespace PhysicsObject
         {
             Vector3 result = Vector3.zero;
 
-            Constant_ForceType zConstantForceType = new Constant_ForceType(_constantForce: 1f, new Vector3(0f, 0f, 1f));
+            Constant_ForceType zConstantForceType = new Constant_ForceType(_constantForce: 5f, _direction: new Vector3(0f, 0f, 1f));
 
             Gravity_ForceType gravityForceType = new Gravity_ForceType(_physicsObject: this);
 
@@ -57,7 +57,9 @@ namespace PhysicsObject
             if (contactCollidersManager.IsInContact == false)
                 return result;
 
-            NormalForce_ForceType normalForce = new NormalForce_ForceType(noConstraintsForces);
+            NormalForceCollider normalForceCollider = contactCollidersManager.GetNormalForceCollider();
+
+            NormalForce_ForceType normalForce = new NormalForce_ForceType(_pushForce: noConstraintsForces, _surfaceNormal: normalForceCollider.NormalVector());
             result += normalForce.Force();
 
             return result;
