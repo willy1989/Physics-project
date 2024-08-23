@@ -22,7 +22,14 @@ namespace PhysicsObject
         private void Update()
         {
             Vector3 noConstraintsForces = NoConstraintsForces();
-            ApplyForces(noConstraintsForces + NormalAndContactForces(noConstraintsForces));
+
+            Vector3 normalForce = NormalForces(noConstraintsForces);
+
+            Vector3 frictionForce = FrictionForces(normalForce);
+
+            Vector3 combinedForces = noConstraintsForces + normalForce + frictionForce;
+
+            ApplyForces(combinedForces);
         }
 
         private Vector3 NoConstraintsForces()
@@ -40,18 +47,25 @@ namespace PhysicsObject
             return result;
         }
 
-        private Vector3 NormalAndContactForces(Vector3 noConstraintsForces)
+        private Vector3 NormalForces(Vector3 noConstraintsForces)
         {
             // Forces with no constraints
             Vector3 result = Vector3.zero;
 
             // Normal forces
 
-            if(contactCollidersManager.IsInContact == false)
+            if (contactCollidersManager.IsInContact == false)
                 return result;
 
             NormalForce_ForceType normalForce = new NormalForce_ForceType(noConstraintsForces);
             result += normalForce.Force();
+
+            return result;
+        }
+
+        private Vector3 FrictionForces(Vector3 normalForce)
+        {
+            Vector3 result = Vector3.zero;
 
             // Friction forces
             if (FinalVelocity.magnitude == 0f)
@@ -61,9 +75,9 @@ namespace PhysicsObject
 
             if (frictionCollider != null)
             {
-                KineticFriction_ForceType kineticFriction_ForceType = new KineticFriction_ForceType(_kineticFrictionCoefficient:frictionCollider.FrictionCoefficient(), 
-                                                                                                    _normalForce: normalForce.Force(), 
-                                                                                                    _direction:FinalVelocity);
+                KineticFriction_ForceType kineticFriction_ForceType = new KineticFriction_ForceType(_kineticFrictionCoefficient: frictionCollider.FrictionCoefficient(),
+                                                                                                    _normalForce: normalForce,
+                                                                                                    _direction: FinalVelocity);
 
                 result += kineticFriction_ForceType.Force();
             }
