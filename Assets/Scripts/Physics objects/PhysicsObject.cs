@@ -25,9 +25,13 @@ namespace PhysicsObject
 
             Vector3 normalForce = NormalForces(noConstraintsForces);
 
-            Vector3 frictionForce = FrictionForces(normalForce);
+            Vector3 pushForce = noConstraintsForces + normalForce;
 
-            Vector3 combinedForces = noConstraintsForces + normalForce + frictionForce;
+            Vector3 staticFrictionForce = StaticFrictionForce(normalForce: normalForce, pushForce: pushForce);
+
+            Vector3 kineticFrictionForce = KineticFrictionForce(normalForce);
+
+            Vector3 combinedForces = noConstraintsForces + normalForce + staticFrictionForce + kineticFrictionForce;
 
             ApplyForces(combinedForces);
         }
@@ -36,7 +40,7 @@ namespace PhysicsObject
         {
             Vector3 result = Vector3.zero;
 
-            Constant_ForceType zConstantForceType = new Constant_ForceType(_constantForce: 5f, _direction: new Vector3(0f, 0f, 1f));
+            Constant_ForceType zConstantForceType = new Constant_ForceType(_constantForce: 1f, _direction: new Vector3(0f, 0f, 1f));
 
             Gravity_ForceType gravityForceType = new Gravity_ForceType(_physicsObject: this);
 
@@ -65,7 +69,7 @@ namespace PhysicsObject
             return result;
         }
 
-        private Vector3 FrictionForces(Vector3 normalForce)
+        private Vector3 KineticFrictionForce(Vector3 normalForce)
         {
             Vector3 result = Vector3.zero;
 
@@ -77,11 +81,29 @@ namespace PhysicsObject
 
             if (frictionCollider != null)
             {
-                KineticFriction_ForceType kineticFriction_ForceType = new KineticFriction_ForceType(_kineticFrictionCoefficient: frictionCollider.FrictionCoefficient(),
+                KineticFriction_ForceType kineticFriction_ForceType = new KineticFriction_ForceType(_kineticFrictionCoefficient: frictionCollider.KineticFrictionCoefficient(),
                                                                                                     _normalForce: normalForce,
                                                                                                     _direction: FinalVelocity);
 
                 result += kineticFriction_ForceType.Force();
+            }
+
+            return result;
+        }
+
+        private Vector3 StaticFrictionForce(Vector3 normalForce, Vector3 pushForce)
+        {
+            Vector3 result = Vector3.zero;
+
+            FrictionCollider frictionCollider = contactCollidersManager.GetFrictionCollider();
+
+            if (frictionCollider != null)
+            {
+                StaticFriction_ForceType staticFriction_ForceType = new StaticFriction_ForceType(normalForce: normalForce,
+                                                                                                 staticFrictionCoefficient: frictionCollider.StaticFrictionCoefficient(),
+                                                                                                 pushForce: pushForce);
+
+                result = staticFriction_ForceType.Force();
             }
 
             return result;

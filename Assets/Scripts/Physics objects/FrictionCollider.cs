@@ -4,10 +4,17 @@ using UnityEngine;
 
 public class FrictionCollider : MonoBehaviour
 {
-    [SerializeField] private float frictionCoefficient;
+    [SerializeField] private float kinematicFrictionCoefficient;
 
-    public float FrictionCoefficient()
+    [SerializeField] private float staticFrictionCoefficient;
+
+    public float KineticFrictionCoefficient()
     {
-        return frictionCoefficient;
+        return kinematicFrictionCoefficient;
+    }
+
+    public float StaticFrictionCoefficient()
+    {
+        return staticFrictionCoefficient;
     }
 }
