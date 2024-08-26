@@ -8,7 +8,7 @@ namespace PhysicsObject
     {
         [SerializeField] private KinematicEquations kinematicEquations;
 
-        [SerializeField] private ContactCollidersManager contactCollidersManager;
+        [SerializeField] private BoxCastCollisionManager boxCastCollisionManager;
 
         [SerializeField] private float mass;
 
@@ -18,9 +18,12 @@ namespace PhysicsObject
 
         public Vector3 FinalVelocity => finalVelocity;
 
+        private List<CollisionInformation> currentCollisionInformation;
 
         private void Update()
         {
+            currentCollisionInformation = boxCastCollisionManager.FilteredCollisionInformation();
+
             Vector3 noConstraintsForces = NoConstraintsForces();
 
             Vector3 normalForce = NormalForces(noConstraintsForces);
@@ -34,6 +37,11 @@ namespace PhysicsObject
             Vector3 combinedForces = noConstraintsForces + normalForce + staticFrictionForce + kineticFrictionForce;
 
             ApplyForces(combinedForces);
+        }
+
+        private bool IsInContact()
+        {
+            return currentCollisionInformation.Count > 0;
         }
 
         private Vector3 NoConstraintsForces()
@@ -58,12 +66,10 @@ namespace PhysicsObject
 
             // Normal forces
 
-            if (contactCollidersManager.IsInContact == false)
+            if (IsInContact() == false)
                 return result;
 
-            NormalForceCollider normalForceCollider = contactCollidersManager.GetNormalForceCollider();
-
-            NormalForce_ForceType normalForce = new NormalForce_ForceType(_pushForce: noConstraintsForces, _surfaceNormal: normalForceCollider.NormalVector());
+            NormalForce_ForceType normalForce = new NormalForce_ForceType(_pushForce: noConstraintsForces, _surfaceNormal: currentCollisionInformation[0].NormalVector);
             result += normalForce.Force();
 
             return result;
@@ -77,11 +83,10 @@ namespace PhysicsObject
             if (FinalVelocity.magnitude == 0f)
                 return result;
 
-            FrictionCollider frictionCollider = contactCollidersManager.GetFrictionCollider();
 
-            if (frictionCollider != null)
+            if (currentCollisionInformation[0] != null)
             {
-                KineticFriction_ForceType kineticFriction_ForceType = new KineticFriction_ForceType(_kineticFrictionCoefficient: frictionCollider.KineticFrictionCoefficient(),
+                KineticFriction_ForceType kineticFriction_ForceType = new KineticFriction_ForceType(_kineticFrictionCoefficient: currentCollisionInformation[0].KineticFrictionCoefficient,
                                                                                                     _normalForce: normalForce,
                                                                                                     _direction: FinalVelocity);
 
@@ -95,12 +100,10 @@ namespace PhysicsObject
         {
             Vector3 result = Vector3.zero;
 
-            FrictionCollider frictionCollider = contactCollidersManager.GetFrictionCollider();
-
-            if (frictionCollider != null)
+            if (currentCollisionInformation[0] != null)
             {
                 StaticFriction_ForceType staticFriction_ForceType = new StaticFriction_ForceType(normalForce: normalForce,
-                                                                                                 staticFrictionCoefficient: frictionCollider.StaticFrictionCoefficient(),
+                                                                                                 staticFrictionCoefficient: currentCollisionInformation[0].StaticFrictionCoefficient,
                                                                                                  pushForce: pushForce);
 
                 result = staticFriction_ForceType.Force();
