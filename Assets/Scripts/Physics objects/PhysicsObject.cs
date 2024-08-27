@@ -33,13 +33,21 @@ namespace PhysicsObject
                 normalForce += NormalForces(noConstraintsForces, collisionInformation.NormalVector);
             }
 
-            Vector3 pushForce = noConstraintsForces + normalForce;
+            Vector3 impactForce = Vector3.zero;
+
+            foreach (CollisionInformation collisionInformation in currentCollisionInformation)
+            {
+                impactForce += ImpactForces(collisionInformation.NormalVector);
+            }
+
+
+            Vector3 pushForce = noConstraintsForces + normalForce + impactForce;
 
             Vector3 staticFrictionForce = StaticFrictionForce(normalForce: normalForce, pushForce: pushForce);
 
             Vector3 kineticFrictionForce = KineticFrictionForce(normalForce);
 
-            Vector3 combinedForces = noConstraintsForces + normalForce + staticFrictionForce + kineticFrictionForce;
+            Vector3 combinedForces = noConstraintsForces + normalForce + impactForce;
 
             ApplyForces(combinedForces);
         }
@@ -53,7 +61,7 @@ namespace PhysicsObject
         {
             Vector3 result = Vector3.zero;
 
-            Constant_ForceType zConstantForceType = new Constant_ForceType(_constantForce: 1f, _direction: new Vector3(0f, 0f, 1f));
+            Constant_ForceType zConstantForceType = new Constant_ForceType(_constantForce: 10f, _direction: new Vector3(0f, 0f, 1f));
 
             Gravity_ForceType gravityForceType = new Gravity_ForceType(_physicsObject: this);
 
@@ -80,6 +88,18 @@ namespace PhysicsObject
             return result;
         }
 
+        private Vector3 ImpactForces(Vector3 normalVector)
+        {
+            Vector3 result = Vector3.zero;
+            if (IsInContact() == false)
+                return result;
+
+            ImpactForce_ForceType impactForce = new ImpactForce_ForceType(_finalVelocity: finalVelocity, _mass:mass, _surfaceNormal: normalVector);
+            result += impactForce.Force();
+
+            return result;
+        }
+
         private Vector3 KineticFrictionForce(Vector3 normalForce)
         {
             Vector3 result = Vector3.zero;
@@ -89,7 +109,7 @@ namespace PhysicsObject
                 return result;
 
 
-            if (currentCollisionInformation[0] != null)
+            if (currentCollisionInformation.Count > 0 && currentCollisionInformation[0] != null)
             {
                 KineticFriction_ForceType kineticFriction_ForceType = new KineticFriction_ForceType(_kineticFrictionCoefficient: currentCollisionInformation[0].KineticFrictionCoefficient,
                                                                                                     _normalForce: normalForce,
@@ -105,7 +125,7 @@ namespace PhysicsObject
         {
             Vector3 result = Vector3.zero;
 
-            if (currentCollisionInformation[0] != null)
+            if (currentCollisionInformation.Count > 0 && currentCollisionInformation[0] != null)
             {
                 StaticFriction_ForceType staticFriction_ForceType = new StaticFriction_ForceType(normalForce: normalForce,
                                                                                                  staticFrictionCoefficient: currentCollisionInformation[0].StaticFrictionCoefficient,
