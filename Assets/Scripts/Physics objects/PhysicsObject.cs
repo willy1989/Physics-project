@@ -26,7 +26,12 @@ namespace PhysicsObject
 
             Vector3 noConstraintsForces = NoConstraintsForces();
 
-            Vector3 normalForce = NormalForces(noConstraintsForces);
+            Vector3 normalForce = Vector3.zero;
+
+            foreach (CollisionInformation collisionInformation in currentCollisionInformation)
+            {
+                normalForce += NormalForces(noConstraintsForces, collisionInformation.NormalVector);
+            }
 
             Vector3 pushForce = noConstraintsForces + normalForce;
 
@@ -59,7 +64,7 @@ namespace PhysicsObject
             return result;
         }
 
-        private Vector3 NormalForces(Vector3 noConstraintsForces)
+        private Vector3 NormalForces(Vector3 noConstraintsForces, Vector3 normalVector)
         {
             // Forces with no constraints
             Vector3 result = Vector3.zero;
@@ -69,7 +74,7 @@ namespace PhysicsObject
             if (IsInContact() == false)
                 return result;
 
-            NormalForce_ForceType normalForce = new NormalForce_ForceType(_pushForce: noConstraintsForces, _surfaceNormal: currentCollisionInformation[0].NormalVector);
+            NormalForce_ForceType normalForce = new NormalForce_ForceType(_pushForce: noConstraintsForces, _surfaceNormal: normalVector);
             result += normalForce.Force();
 
             return result;
