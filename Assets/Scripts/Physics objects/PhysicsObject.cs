@@ -8,6 +8,8 @@ namespace PhysicsObject
     {
         [SerializeField] private KinematicEquations kinematicEquations;
 
+        [SerializeField] private ForceCalculator forceCalculator;
+
         [SerializeField] private BoxCastCollisionManager boxCastCollisionManager;
 
         [SerializeField] private float mass;
@@ -47,7 +49,7 @@ namespace PhysicsObject
 
             Vector3 kineticFrictionForce = KineticFrictionForce(normalForce);
 
-            Vector3 combinedForces = noConstraintsForces + normalForce + impactForce;
+            Vector3 combinedForces = noConstraintsForces + normalForce + impactForce + kineticFrictionForce + staticFrictionForce;
 
             ApplyForces(combinedForces);
         }
@@ -61,13 +63,13 @@ namespace PhysicsObject
         {
             Vector3 result = Vector3.zero;
 
-            Constant_ForceType zConstantForceType = new Constant_ForceType(_constantForce: 10f, _direction: new Vector3(0f, 0f, 1f));
+            Vector3 zConstantForce = forceCalculator.ConstantForce(magnitude: 3f, direction: new Vector3(0f, 0f, 1f));
 
-            Gravity_ForceType gravityForceType = new Gravity_ForceType(_physicsObject: this);
+            Vector3 gravityForce = forceCalculator.ConstantForce(magnitude: 9.81f, direction: new Vector3(0f, -1f, 0f));
 
-            result += zConstantForceType.Force();
+            result += zConstantForce;
 
-            result += gravityForceType.Force();
+            result += gravityForce;
 
             return result;
         }
@@ -82,8 +84,9 @@ namespace PhysicsObject
             if (IsInContact() == false)
                 return result;
 
-            NormalForce_ForceType normalForce = new NormalForce_ForceType(_pushForce: noConstraintsForces, _surfaceNormal: normalVector);
-            result += normalForce.Force();
+            Vector3 normalForce = forceCalculator.NormalForce(pushForce: noConstraintsForces, surfaceNormal: normalVector);
+            
+            result += normalForce;
 
             return result;
         }
@@ -94,8 +97,9 @@ namespace PhysicsObject
             if (IsInContact() == false)
                 return result;
 
-            ImpactForce_ForceType impactForce = new ImpactForce_ForceType(_finalVelocity: finalVelocity, _mass:mass, _surfaceNormal: normalVector);
-            result += impactForce.Force();
+            Vector3 impactForce = forceCalculator.ImpactForce(finalVelocity: finalVelocity, mass: mass, surfaceNormal: normalVector);
+            
+            result += impactForce;
 
             return result;
         }
@@ -111,11 +115,11 @@ namespace PhysicsObject
 
             if (currentCollisionInformation.Count > 0 && currentCollisionInformation[0] != null)
             {
-                KineticFriction_ForceType kineticFriction_ForceType = new KineticFriction_ForceType(_kineticFrictionCoefficient: currentCollisionInformation[0].KineticFrictionCoefficient,
-                                                                                                    _normalForce: normalForce,
-                                                                                                    _direction: FinalVelocity);
-
-                result += kineticFriction_ForceType.Force();
+                Vector3 kineticFrictionForce = forceCalculator.KineticFrictionForce(kineticFrictionCoefficient: currentCollisionInformation[0].KineticFrictionCoefficient, 
+                                                                                    normalForce: normalForce, 
+                                                                                    movementDirection: FinalVelocity);
+                                                                                       
+                result += kineticFrictionForce;
             }
 
             return result;
@@ -127,11 +131,11 @@ namespace PhysicsObject
 
             if (currentCollisionInformation.Count > 0 && currentCollisionInformation[0] != null)
             {
-                StaticFriction_ForceType staticFriction_ForceType = new StaticFriction_ForceType(normalForce: normalForce,
-                                                                                                 staticFrictionCoefficient: currentCollisionInformation[0].StaticFrictionCoefficient,
-                                                                                                 pushForce: pushForce);
+                Vector3 staticFrictionForce = forceCalculator.StaticFrictionForce(normalForce: normalForce, 
+                                                                                  staticFrictionCoefficient: currentCollisionInformation[0].StaticFrictionCoefficient, 
+                                                                                  pushForce: pushForce);
 
-                result = staticFriction_ForceType.Force();
+                result += staticFrictionForce;
             }
 
             return result;

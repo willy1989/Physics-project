@@ -21,8 +21,6 @@ namespace PhysicsObject
             // Angle between surface normal and push force
             float angleRadians = AngleInRadiansFromVectors(pushForce, -surfaceNormal);
 
-            float angleDegrees = Mathf.Rad2Deg * angleRadians;
-
             float normalForceMagnitude = Mathf.Cos(angleRadians) * pushForce.magnitude;
 
             Vector3 result = surfaceNormal * normalForceMagnitude;
