@@ -10,8 +10,6 @@ namespace PhysicsObject
 
         [SerializeField] private ForceManager forceManager;
 
-        [SerializeField] private BoxCastCollisionManager boxCastCollisionManager;
-
         [SerializeField] private float mass;
 
         public float Mass => mass;
@@ -22,10 +20,7 @@ namespace PhysicsObject
 
         private void Update()
         {
-            Vector3 combinedForces = forceManager.CombinedForces(isInContact: boxCastCollisionManager.IsInContact, 
-                                                                 collisionInformation: boxCastCollisionManager.CollisionInformation,
-                                                                 mass: mass,
-                                                                 finalVelocity: finalVelocity);
+            Vector3 combinedForces = forceManager.CombinedForces(mass: mass, finalVelocity: finalVelocity);
 
             ApplyForces(combinedForces);
         }

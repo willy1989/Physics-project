@@ -159,8 +159,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kinematicEquations: {fileID: 726597000}
   forceManager: {fileID: 769146454}
-  forceCalculator: {fileID: 2008420801}
-  boxCastCollisionManager: {fileID: 164070656}
   mass: 1
 --- !u!23 &164070650
 MeshRenderer:
@@ -220,7 +218,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 164070648}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.6300001, z: -14.17}
+  m_LocalPosition: {x: 0, y: 6.08, z: -14.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -427,6 +425,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   forceCalculator: {fileID: 2008420801}
+  boxCastCollisionManager: {fileID: 164070656}
 --- !u!4 &769146455
 Transform:
   m_ObjectHideFlags: 0

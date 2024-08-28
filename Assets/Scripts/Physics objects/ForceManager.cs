@@ -6,8 +6,9 @@ public class ForceManager : MonoBehaviour
 {
     [SerializeField] private ForceCalculator forceCalculator;
 
+    [SerializeField] private BoxCastCollisionManager boxCastCollisionManager;
 
-    public Vector3 CombinedForces(bool isInContact, List<CollisionInformation> collisionInformation, float mass, Vector3 finalVelocity)
+    public Vector3 CombinedForces(float mass, Vector3 finalVelocity)
     {
         Vector3 zConstantForce = ConstantForce(magnitude: 3f, direction: new Vector3(0f, 0f, 1f));
 
@@ -16,25 +17,22 @@ public class ForceManager : MonoBehaviour
         Vector3 noConstraintsForces = zConstantForce + gravityForce;
 
         Vector3 normalForce = NormalForces(noConstraintsForces: noConstraintsForces,
-                                                        isInContact: isInContact,
-                                                        collisionInformation: collisionInformation);
+                                                        collisionInformation: boxCastCollisionManager.CollisionInformation);
 
-        Vector3 impactForce = ImpactForces(isInContact: isInContact,
-                                                        mass: mass,
-                                                        finalVelocity: finalVelocity,
-                                                        collisionInformation: collisionInformation);
+
+        Vector3 impactForce = ImpactForces(mass: mass,
+                                           finalVelocity: finalVelocity,
+                                           collisionInformation: boxCastCollisionManager.CollisionInformation);
 
         Vector3 pushForce = noConstraintsForces + normalForce + impactForce;
 
         Vector3 staticFrictionForce = StaticFrictionForce(normalForce: normalForce,
                                                                        pushForce: pushForce,
-                                                                       collisionInformation: collisionInformation,
-                                                                       isInContact: isInContact);
+                                                                       collisionInformation: boxCastCollisionManager.CollisionInformation);
 
         Vector3 kineticFrictionForce = KineticFrictionForce(normalForce: normalForce,
                                                             finalVelocity: finalVelocity,
-                                                            collisionInformation: collisionInformation,
-                                                            isInContact: isInContact);
+                                                            collisionInformation: boxCastCollisionManager.CollisionInformation);
 
         Vector3 result = noConstraintsForces + normalForce + impactForce + kineticFrictionForce + staticFrictionForce;
 
@@ -46,11 +44,11 @@ public class ForceManager : MonoBehaviour
         return forceCalculator.ConstantForce(magnitude, direction);
     }
 
-    private Vector3 NormalForce(Vector3 noConstraintsForces, Vector3 normalVector, bool isInContact)
+    private Vector3 NormalForce(Vector3 noConstraintsForces, Vector3 normalVector)
     {
         Vector3 result = Vector3.zero;
 
-        if (isInContact == false)
+        if (boxCastCollisionManager.IsInContact == false)
             return result;
 
         Vector3 normalForce = forceCalculator.NormalForce(pushForce: noConstraintsForces, surfaceNormal: normalVector);
@@ -60,22 +58,22 @@ public class ForceManager : MonoBehaviour
         return result;
     }
 
-    private Vector3 NormalForces(Vector3 noConstraintsForces, bool isInContact, List<CollisionInformation> collisionInformation)
+    private Vector3 NormalForces(Vector3 noConstraintsForces, List<CollisionInformation> collisionInformation)
     {
         Vector3 result = Vector3.zero;
 
         foreach (CollisionInformation item in collisionInformation)
         {
-            result += NormalForce(noConstraintsForces, item.NormalVector, isInContact);
+            result += NormalForce(noConstraintsForces, item.NormalVector);
         }
 
         return result;
     }
 
-    private Vector3 ImpactForce(Vector3 normalVector, bool isInContact, float mass, Vector3 finalVelocity)
+    private Vector3 ImpactForce(Vector3 normalVector, float mass, Vector3 finalVelocity)
     {
         Vector3 result = Vector3.zero;
-        if (isInContact == false)
+        if (boxCastCollisionManager.IsInContact == false)
             return result;
 
         Vector3 impactForce = forceCalculator.ImpactForce(finalVelocity: finalVelocity, mass: mass, surfaceNormal: normalVector);
@@ -85,14 +83,13 @@ public class ForceManager : MonoBehaviour
         return result;
     }
 
-    private Vector3 ImpactForces(bool isInContact, float mass, Vector3 finalVelocity, List<CollisionInformation> collisionInformation)
+    private Vector3 ImpactForces(float mass, Vector3 finalVelocity, List<CollisionInformation> collisionInformation)
     {
         Vector3 result = Vector3.zero;
 
         foreach (CollisionInformation item in collisionInformation)
         {
             result += ImpactForce(normalVector: item.NormalVector,
-                                        isInContact: isInContact,
                                         mass: mass,
                                         finalVelocity: finalVelocity);
         }
@@ -100,14 +97,13 @@ public class ForceManager : MonoBehaviour
         return result;
     }
 
-    private Vector3 StaticFrictionForce(Vector3 normalForce, Vector3 pushForce, List<CollisionInformation> collisionInformation, bool isInContact)
+    private Vector3 StaticFrictionForce(Vector3 normalForce, Vector3 pushForce, List<CollisionInformation> collisionInformation)
     {
         if (collisionInformation.Count <= 0)
             return Vector3.zero;
 
-        if (isInContact == false)
+        if (boxCastCollisionManager.IsInContact == false)
             return Vector3.zero;
-
 
         Vector3 staticFrictionForce = forceCalculator.StaticFrictionForce(normalForce: normalForce,
                                                                               staticFrictionCoefficient: collisionInformation[0].StaticFrictionCoefficient,
@@ -118,12 +114,9 @@ public class ForceManager : MonoBehaviour
         return result;
     }
 
-    private Vector3 KineticFrictionForce(Vector3 normalForce, Vector3 finalVelocity, List<CollisionInformation> collisionInformation, bool isInContact)
+    private Vector3 KineticFrictionForce(Vector3 normalForce, Vector3 finalVelocity, List<CollisionInformation> collisionInformation)
     {
         Vector3 result = Vector3.zero;
-
-        if (collisionInformation.Count <= 0)
-            return result;
 
         if (collisionInformation.Count <= 0)
             return result;
@@ -131,7 +124,7 @@ public class ForceManager : MonoBehaviour
         if (finalVelocity.magnitude == 0f)
             return result;
 
-        if (isInContact == false)
+        if (boxCastCollisionManager.IsInContact == false)
             return result;
 
         Vector3 kineticFrictionForce = forceCalculator.KineticFrictionForce(kineticFrictionCoefficient: collisionInformation[0].KineticFrictionCoefficient,
