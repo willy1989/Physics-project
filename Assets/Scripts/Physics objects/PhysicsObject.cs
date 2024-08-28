@@ -20,24 +20,20 @@ namespace PhysicsObject
 
         public Vector3 FinalVelocity => finalVelocity;
 
-        private List<CollisionInformation> currentCollisionInformation;
-
         private void Update()
         {
-            currentCollisionInformation = boxCastCollisionManager.FilteredCollisionInformation();
-
             Vector3 noConstraintsForces = NoConstraintsForces();
 
             Vector3 normalForce = Vector3.zero;
 
-            foreach (CollisionInformation collisionInformation in currentCollisionInformation)
+            foreach (CollisionInformation collisionInformation in boxCastCollisionManager.CollisionInformation)
             {
                 normalForce += NormalForces(noConstraintsForces, collisionInformation.NormalVector);
             }
 
             Vector3 impactForce = Vector3.zero;
 
-            foreach (CollisionInformation collisionInformation in currentCollisionInformation)
+            foreach (CollisionInformation collisionInformation in boxCastCollisionManager.CollisionInformation)
             {
                 impactForce += ImpactForces(collisionInformation.NormalVector);
             }
@@ -52,11 +48,6 @@ namespace PhysicsObject
             Vector3 combinedForces = noConstraintsForces + normalForce + impactForce + kineticFrictionForce + staticFrictionForce;
 
             ApplyForces(combinedForces);
-        }
-
-        private bool IsInContact()
-        {
-            return currentCollisionInformation.Count > 0;
         }
 
         private Vector3 NoConstraintsForces()
@@ -81,7 +72,7 @@ namespace PhysicsObject
 
             // Normal forces
 
-            if (IsInContact() == false)
+            if (boxCastCollisionManager.IsInContact == false)
                 return result;
 
             Vector3 normalForce = forceCalculator.NormalForce(pushForce: noConstraintsForces, surfaceNormal: normalVector);
@@ -94,7 +85,7 @@ namespace PhysicsObject
         private Vector3 ImpactForces(Vector3 normalVector)
         {
             Vector3 result = Vector3.zero;
-            if (IsInContact() == false)
+            if (boxCastCollisionManager.IsInContact == false)
                 return result;
 
             Vector3 impactForce = forceCalculator.ImpactForce(finalVelocity: finalVelocity, mass: mass, surfaceNormal: normalVector);
@@ -113,9 +104,9 @@ namespace PhysicsObject
                 return result;
 
 
-            if (currentCollisionInformation.Count > 0 && currentCollisionInformation[0] != null)
+            if (boxCastCollisionManager.IsInContact && boxCastCollisionManager.CollisionInformation[0] != null)
             {
-                Vector3 kineticFrictionForce = forceCalculator.KineticFrictionForce(kineticFrictionCoefficient: currentCollisionInformation[0].KineticFrictionCoefficient, 
+                Vector3 kineticFrictionForce = forceCalculator.KineticFrictionForce(kineticFrictionCoefficient: boxCastCollisionManager.CollisionInformation[0].KineticFrictionCoefficient, 
                                                                                     normalForce: normalForce, 
                                                                                     movementDirection: FinalVelocity);
                                                                                        
@@ -129,10 +120,10 @@ namespace PhysicsObject
         {
             Vector3 result = Vector3.zero;
 
-            if (currentCollisionInformation.Count > 0 && currentCollisionInformation[0] != null)
+            if (boxCastCollisionManager.IsInContact && boxCastCollisionManager.CollisionInformation[0] != null)
             {
                 Vector3 staticFrictionForce = forceCalculator.StaticFrictionForce(normalForce: normalForce, 
-                                                                                  staticFrictionCoefficient: currentCollisionInformation[0].StaticFrictionCoefficient, 
+                                                                                  staticFrictionCoefficient: boxCastCollisionManager.CollisionInformation[0].StaticFrictionCoefficient, 
                                                                                   pushForce: pushForce);
 
                 result += staticFrictionForce;

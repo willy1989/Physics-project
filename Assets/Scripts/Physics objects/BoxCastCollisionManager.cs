@@ -4,7 +4,20 @@ using UnityEngine;
 
 public class BoxCastCollisionManager : MonoBehaviour
 {
-    public List<CollisionInformation> FilteredCollisionInformation()
+
+    public List<CollisionInformation> CollisionInformation = new List<CollisionInformation>();
+
+    public bool IsInContact 
+    { 
+        get { return CollisionInformation.Count > 0; } 
+    }
+
+    public void Update()
+    {
+        CollisionInformation = FilteredCollisionInformation();
+    }
+
+    private List<CollisionInformation> FilteredCollisionInformation()
     {
         List<CollisionInformation> rawCollisionInformation = RawCollisionInformation();
 
@@ -69,8 +82,4 @@ public class BoxCastCollisionManager : MonoBehaviour
 
         return result;
     }
-
-    
-
-    
 }

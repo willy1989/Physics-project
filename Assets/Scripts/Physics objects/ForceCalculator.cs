@@ -11,7 +11,6 @@ public class ForceCalculator : MonoBehaviour
 
     public Vector3 NormalForce(Vector3 pushForce, Vector3 surfaceNormal)
     {
-        // Angle between surface normal and push force
         float angleRadians = AngleInRadiansFromVectors(pushForce, -surfaceNormal);
 
         float normalForceMagnitude = Mathf.Cos(angleRadians) * pushForce.magnitude;
@@ -26,7 +25,6 @@ public class ForceCalculator : MonoBehaviour
         if (finalVelocity.magnitude <= 0)
             return Vector3.zero;
 
-        // Angle between surface normal and push force
         float angleRadians = AngleInRadiansFromVectors(finalVelocity, -surfaceNormal);
 
         float normalForceMagnitude = Mathf.Cos(angleRadians) * finalVelocity.magnitude;
