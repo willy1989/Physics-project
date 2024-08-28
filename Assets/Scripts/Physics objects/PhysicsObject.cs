@@ -8,7 +8,7 @@ namespace PhysicsObject
     {
         [SerializeField] private KinematicEquations kinematicEquations;
 
-        [SerializeField] private ForceCalculator forceCalculator;
+        [SerializeField] private ForceManager forceManager;
 
         [SerializeField] private BoxCastCollisionManager boxCastCollisionManager;
 
@@ -22,114 +22,12 @@ namespace PhysicsObject
 
         private void Update()
         {
-            Vector3 noConstraintsForces = NoConstraintsForces();
-
-            Vector3 normalForce = Vector3.zero;
-
-            foreach (CollisionInformation collisionInformation in boxCastCollisionManager.CollisionInformation)
-            {
-                normalForce += NormalForces(noConstraintsForces, collisionInformation.NormalVector);
-            }
-
-            Vector3 impactForce = Vector3.zero;
-
-            foreach (CollisionInformation collisionInformation in boxCastCollisionManager.CollisionInformation)
-            {
-                impactForce += ImpactForces(collisionInformation.NormalVector);
-            }
-
-
-            Vector3 pushForce = noConstraintsForces + normalForce + impactForce;
-
-            Vector3 staticFrictionForce = StaticFrictionForce(normalForce: normalForce, pushForce: pushForce);
-
-            Vector3 kineticFrictionForce = KineticFrictionForce(normalForce);
-
-            Vector3 combinedForces = noConstraintsForces + normalForce + impactForce + kineticFrictionForce + staticFrictionForce;
+            Vector3 combinedForces = forceManager.CombinedForces(isInContact: boxCastCollisionManager.IsInContact, 
+                                                                 collisionInformation: boxCastCollisionManager.CollisionInformation,
+                                                                 mass: mass,
+                                                                 finalVelocity: finalVelocity);
 
             ApplyForces(combinedForces);
-        }
-
-        private Vector3 NoConstraintsForces()
-        {
-            Vector3 result = Vector3.zero;
-
-            Vector3 zConstantForce = forceCalculator.ConstantForce(magnitude: 3f, direction: new Vector3(0f, 0f, 1f));
-
-            Vector3 gravityForce = forceCalculator.ConstantForce(magnitude: 9.81f, direction: new Vector3(0f, -1f, 0f));
-
-            result += zConstantForce;
-
-            result += gravityForce;
-
-            return result;
-        }
-
-        private Vector3 NormalForces(Vector3 noConstraintsForces, Vector3 normalVector)
-        {
-            // Forces with no constraints
-            Vector3 result = Vector3.zero;
-
-            // Normal forces
-
-            if (boxCastCollisionManager.IsInContact == false)
-                return result;
-
-            Vector3 normalForce = forceCalculator.NormalForce(pushForce: noConstraintsForces, surfaceNormal: normalVector);
-            
-            result += normalForce;
-
-            return result;
-        }
-
-        private Vector3 ImpactForces(Vector3 normalVector)
-        {
-            Vector3 result = Vector3.zero;
-            if (boxCastCollisionManager.IsInContact == false)
-                return result;
-
-            Vector3 impactForce = forceCalculator.ImpactForce(finalVelocity: finalVelocity, mass: mass, surfaceNormal: normalVector);
-            
-            result += impactForce;
-
-            return result;
-        }
-
-        private Vector3 KineticFrictionForce(Vector3 normalForce)
-        {
-            Vector3 result = Vector3.zero;
-
-            // Friction forces
-            if (FinalVelocity.magnitude == 0f)
-                return result;
-
-
-            if (boxCastCollisionManager.IsInContact && boxCastCollisionManager.CollisionInformation[0] != null)
-            {
-                Vector3 kineticFrictionForce = forceCalculator.KineticFrictionForce(kineticFrictionCoefficient: boxCastCollisionManager.CollisionInformation[0].KineticFrictionCoefficient, 
-                                                                                    normalForce: normalForce, 
-                                                                                    movementDirection: FinalVelocity);
-                                                                                       
-                result += kineticFrictionForce;
-            }
-
-            return result;
-        }
-
-        private Vector3 StaticFrictionForce(Vector3 normalForce, Vector3 pushForce)
-        {
-            Vector3 result = Vector3.zero;
-
-            if (boxCastCollisionManager.IsInContact && boxCastCollisionManager.CollisionInformation[0] != null)
-            {
-                Vector3 staticFrictionForce = forceCalculator.StaticFrictionForce(normalForce: normalForce, 
-                                                                                  staticFrictionCoefficient: boxCastCollisionManager.CollisionInformation[0].StaticFrictionCoefficient, 
-                                                                                  pushForce: pushForce);
-
-                result += staticFrictionForce;
-            }
-
-            return result;
         }
 
         private void ApplyForces(Vector3 combinedForces)
