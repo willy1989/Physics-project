@@ -13,6 +13,11 @@ public class ForceCalculator : MonoBehaviour
     {
         float angleRadians = AngleInRadiansFromVectors(pushForce, -surfaceNormal);
 
+        float anglesDegrees = Mathf.Rad2Deg * angleRadians;
+
+        if (anglesDegrees > 90)
+            return Vector3.zero;
+
         float normalForceMagnitude = Mathf.Cos(angleRadians) * pushForce.magnitude;
 
         Vector3 result = surfaceNormal * normalForceMagnitude;

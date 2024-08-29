@@ -33,6 +33,9 @@ namespace PhysicsObject
 
             finalVelocity = ComputedFinalVelocity(initialVelocity, acceleration);
 
+            if (finalVelocity.magnitude <= 0.05)
+                finalVelocity = Vector3.zero;
+
             Vector3 displacement = Displacement(initialVelocity, finalVelocity);
 
             transform.position += displacement;
