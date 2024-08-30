@@ -14,13 +14,12 @@ public class ForceManager : MonoBehaviour
 
         Vector3 gravityForce = ConstantForce(magnitude: 9.81f, direction: new Vector3(0f, -1f, 0f));
 
+        // Calculate normal forces individually. One per surface. Then use each to calculate each corresponding static and friction forces. 
         Vector3 normalForce = NormalForces(pushForce: zConstantForce + gravityForce);
 
         Vector3 impactForce = ImpactForces(mass: mass, finalVelocity: finalVelocity);
 
         // Update final velocity here?
-
-        Vector3 pushForce = zConstantForce + gravityForce + normalForce + impactForce;
 
         Vector3 kineticFrictionForce = KineticFrictionForce(normalForce: normalForce, finalVelocity: finalVelocity);
 
