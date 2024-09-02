@@ -10,7 +10,7 @@ public class ForceManager : MonoBehaviour
 
     public Vector3 CombinedForces(float mass, Vector3 finalVelocity)
     {
-        Vector3 zConstantForce = ConstantForce(magnitude: 10f, direction: new Vector3(0f, 0f, 1f));
+        Vector3 zConstantForce = ConstantForce(magnitude: 1f, direction: new Vector3(0f, 0f, 1f));
 
         Vector3 gravityForce = ConstantForce(magnitude: 9.81f, direction: new Vector3(0f, -1f, 0f));
 
@@ -31,11 +31,11 @@ public class ForceManager : MonoBehaviour
             }
         }
 
-        Vector3 combinedFrictionForces = KineticFrictionForce(pushForce: zConstantForce + gravityForce, finalVelocity: finalVelocity);
+        Vector3 combinedKineticFrictionForces = KineticFrictionForce(pushForce: zConstantForce + gravityForce, finalVelocity: finalVelocity);
 
-        //Vector3 staticFrictionForce = StaticFrictionForce(normalForce: normalForce, pushForce: zConstantForce);
+        Vector3 combinedStaticFrictionForces = StaticFrictionForce(pushForce: zConstantForce + gravityForce, finalVelocity: finalVelocity);
 
-        Vector3 result = zConstantForce + gravityForce + combinedNormalForces + combinedImpactForces + combinedFrictionForces;
+        Vector3 result = zConstantForce + gravityForce + combinedNormalForces + combinedImpactForces + combinedKineticFrictionForces + combinedStaticFrictionForces;
 
         return result;
     }
@@ -76,19 +76,31 @@ public class ForceManager : MonoBehaviour
         return result;
     }
 
-    private Vector3 StaticFrictionForce(Vector3 normalForce, Vector3 pushForce)
+    private Vector3 StaticFrictionForce(Vector3 pushForce, Vector3 finalVelocity)
     {
-        if (boxCastCollisionManager.IsInContact == false)
+        if(boxCastCollisionManager.IsInContact == false)
+           return Vector3.zero;
+
+        if(finalVelocity.magnitude > 0f)
             return Vector3.zero;
 
-        float fsMax = forceCalculator.FsMax(normalForce: normalForce, staticFrictionCoefficient: boxCastCollisionManager.CollisionInformation[0].StaticFrictionCoefficient);
+        Vector3 result = Vector3.zero;
 
-        Vector3 result = forceCalculator.StaticFrictionForce(fsMax: fsMax, pushForce: pushForce);
+        foreach (CollisionInformation item in boxCastCollisionManager.CollisionInformation)
+        {
+            Vector3 normalForce = forceCalculator.NormalForce(pushForce: pushForce, surfaceNormal: item.NormalVector);
+
+            Vector3 effectiveForce = pushForce + normalForce;
+
+            float fsMax = forceCalculator.FsMax(normalForce : normalForce, staticFrictionCoefficient: item.StaticFrictionCoefficient);
+
+            Vector3 staticFrictionForce = forceCalculator.StaticFrictionForce(fsMax: fsMax, pushForce: effectiveForce);
+
+            result += staticFrictionForce;
+        }
 
         return result;
     }
-
-
 
     private Vector3 KineticFrictionForce(Vector3 pushForce, Vector3 finalVelocity)
     {
@@ -100,7 +112,6 @@ public class ForceManager : MonoBehaviour
         foreach(CollisionInformation item in boxCastCollisionManager.CollisionInformation)
         {
             Vector3 normalForce = forceCalculator.NormalForce(pushForce: pushForce, surfaceNormal: item.NormalVector);
-
 
             result += forceCalculator.KineticFrictionForce(kineticFrictionCoefficient: item.KineticFrictionCoefficient,
                                                            normalForce: normalForce,
