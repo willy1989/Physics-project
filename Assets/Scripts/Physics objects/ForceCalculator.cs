@@ -52,14 +52,19 @@ public class ForceCalculator : MonoBehaviour
         return result;
     }
 
-    public Vector3 StaticFrictionForce(Vector3 normalForce, float staticFrictionCoefficient, Vector3 pushForce)
+    public Vector3 StaticFrictionForce(float fsMax, Vector3 pushForce)
     {
-        Vector3 fsMax = normalForce * staticFrictionCoefficient;
-
-        if (fsMax.magnitude >= pushForce.magnitude)
+        if (fsMax >= pushForce.magnitude)
             return -pushForce;
         else
             return Vector3.zero;
+    }
+
+    public float FsMax(Vector3 normalForce, float staticFrictionCoefficient)
+    {
+        float result = (normalForce * staticFrictionCoefficient).magnitude;
+
+        return result;
     }
 
     private float AngleInRadiansFromVectors(Vector3 vectorA, Vector3 vectorB)

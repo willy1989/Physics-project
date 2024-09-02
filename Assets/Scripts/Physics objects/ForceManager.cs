@@ -10,22 +10,32 @@ public class ForceManager : MonoBehaviour
 
     public Vector3 CombinedForces(float mass, Vector3 finalVelocity)
     {
-        Vector3 zConstantForce = ConstantForce(magnitude: 3f, direction: new Vector3(0f, 0f, 1f));
+        Vector3 zConstantForce = ConstantForce(magnitude: 10f, direction: new Vector3(0f, 0f, 1f));
 
         Vector3 gravityForce = ConstantForce(magnitude: 9.81f, direction: new Vector3(0f, -1f, 0f));
 
         // Calculate normal forces individually. One per surface. Then use each to calculate each corresponding static and friction forces. 
-        Vector3 normalForce = NormalForces(pushForce: zConstantForce + gravityForce);
+        List<Vector3> normalForces = NormalForces(pushForce: zConstantForce + gravityForce);
 
-        Vector3 impactForce = ImpactForces(mass: mass, finalVelocity: finalVelocity);
+        Vector3 combinedImpactForces = ImpactForces(mass: mass, finalVelocity: finalVelocity);
 
         // Update final velocity here?
 
-        Vector3 kineticFrictionForce = KineticFrictionForce(normalForce: normalForce, finalVelocity: finalVelocity);
+        Vector3 combinedNormalForces = Vector3.zero;
 
-        //Vector3 staticFrictionForce = StaticFrictionForce(normalForce: normalForce, pushForce: pushForce);
+        if(normalForces != null)
+        {
+            foreach (Vector3 normalForce in normalForces)
+            {
+                combinedNormalForces += normalForce;
+            }
+        }
 
-        Vector3 result = zConstantForce + gravityForce + normalForce + impactForce + kineticFrictionForce;
+        Vector3 combinedFrictionForces = KineticFrictionForce(pushForce: zConstantForce + gravityForce, finalVelocity: finalVelocity);
+
+        //Vector3 staticFrictionForce = StaticFrictionForce(normalForce: normalForce, pushForce: zConstantForce);
+
+        Vector3 result = zConstantForce + gravityForce + combinedNormalForces + combinedImpactForces + combinedFrictionForces;
 
         return result;
     }
@@ -35,16 +45,16 @@ public class ForceManager : MonoBehaviour
         return forceCalculator.ConstantForce(magnitude, direction);
     }
 
-    private Vector3 NormalForces(Vector3 pushForce)
+    private List<Vector3> NormalForces(Vector3 pushForce)
     {
         if (boxCastCollisionManager.IsInContact == false)
-            return Vector3.zero;
+            return null;
 
-        Vector3 result = Vector3.zero;
+        List<Vector3> result = new List<Vector3>();
 
         foreach (CollisionInformation item in boxCastCollisionManager.CollisionInformation)
         {
-            result += forceCalculator.NormalForce(pushForce: pushForce, surfaceNormal: item.NormalVector);
+            result.Add(forceCalculator.NormalForce(pushForce: pushForce, surfaceNormal: item.NormalVector));
         }
 
         return result;
@@ -71,14 +81,16 @@ public class ForceManager : MonoBehaviour
         if (boxCastCollisionManager.IsInContact == false)
             return Vector3.zero;
 
-        Vector3 result = forceCalculator.StaticFrictionForce(normalForce: normalForce,
-                                                                              staticFrictionCoefficient: boxCastCollisionManager.CollisionInformation[0].StaticFrictionCoefficient,
-                                                                              pushForce: pushForce);
+        float fsMax = forceCalculator.FsMax(normalForce: normalForce, staticFrictionCoefficient: boxCastCollisionManager.CollisionInformation[0].StaticFrictionCoefficient);
+
+        Vector3 result = forceCalculator.StaticFrictionForce(fsMax: fsMax, pushForce: pushForce);
 
         return result;
     }
 
-    private Vector3 KineticFrictionForce(Vector3 normalForce, Vector3 finalVelocity)
+
+
+    private Vector3 KineticFrictionForce(Vector3 pushForce, Vector3 finalVelocity)
     {
         if (boxCastCollisionManager.IsInContact == false)
             return Vector3.zero;
@@ -87,9 +99,12 @@ public class ForceManager : MonoBehaviour
 
         foreach(CollisionInformation item in boxCastCollisionManager.CollisionInformation)
         {
+            Vector3 normalForce = forceCalculator.NormalForce(pushForce: pushForce, surfaceNormal: item.NormalVector);
+
+
             result += forceCalculator.KineticFrictionForce(kineticFrictionCoefficient: item.KineticFrictionCoefficient,
-                                                                            normalForce: normalForce,
-                                                                            movementDirection: finalVelocity);
+                                                           normalForce: normalForce,
+                                                           movementDirection: finalVelocity);
         }
 
         return result;
