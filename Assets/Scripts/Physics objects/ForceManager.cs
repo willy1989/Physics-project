@@ -10,7 +10,7 @@ public class ForceManager : MonoBehaviour
 
     public Vector3 CombinedForces(float mass, Vector3 finalVelocity)
     {
-        Vector3 zConstantForce = ConstantForce(magnitude: 1f, direction: new Vector3(0f, 0f, 1f));
+        Vector3 zConstantForce = ConstantForce(magnitude: 5f, direction: new Vector3(0f, 0f, 1f));
 
         Vector3 gravityForce = ConstantForce(magnitude: 9.81f, direction: new Vector3(0f, -1f, 0f));
 
@@ -107,15 +107,21 @@ public class ForceManager : MonoBehaviour
         if (boxCastCollisionManager.IsInContact == false)
             return Vector3.zero;
 
+        Vector3 cachedPushForce = pushForce;
+
         Vector3 result = Vector3.zero;
 
         foreach(CollisionInformation item in boxCastCollisionManager.CollisionInformation)
         {
-            Vector3 normalForce = forceCalculator.NormalForce(pushForce: pushForce, surfaceNormal: item.NormalVector);
+            Vector3 normalForce = forceCalculator.NormalForce(pushForce: cachedPushForce, surfaceNormal: item.NormalVector);
 
-            result += forceCalculator.KineticFrictionForce(kineticFrictionCoefficient: item.KineticFrictionCoefficient,
-                                                           normalForce: normalForce,
-                                                           movementDirection: finalVelocity);
+            cachedPushForce += normalForce;
+
+            Vector3 temp = forceCalculator.KineticFrictionForce(kineticFrictionCoefficient: item.KineticFrictionCoefficient,
+                                                                normalForce: normalForce,
+                                                                movementDirection: finalVelocity);
+
+            result += temp;
         }
 
         return result;
