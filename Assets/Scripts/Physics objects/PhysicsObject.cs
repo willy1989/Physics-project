@@ -10,6 +10,8 @@ namespace PhysicsObject
 
         [SerializeField] private ForceManager forceManager;
 
+        [SerializeField] private ConstantForceController constantForceController;
+
         [SerializeField] private float mass;
 
         public float Mass => mass;
@@ -20,7 +22,7 @@ namespace PhysicsObject
 
         private void Update()
         {
-            Vector3 combinedForces = forceManager.CombinedForces(mass: mass, finalVelocity: finalVelocity);
+            Vector3 combinedForces = forceManager.CombinedForces(mass: mass, finalVelocity: finalVelocity, constantForceController.Force());
 
             ApplyForces(combinedForces);
         }
@@ -33,8 +35,8 @@ namespace PhysicsObject
 
             finalVelocity = ComputedFinalVelocity(initialVelocity, acceleration);
 
-            if (finalVelocity.magnitude <= 0.05)
-                finalVelocity = Vector3.zero;
+            //if (finalVelocity.magnitude <= 0.05)
+              //  finalVelocity = Vector3.zero;
 
             Vector3 displacement = Displacement(initialVelocity, finalVelocity);
 

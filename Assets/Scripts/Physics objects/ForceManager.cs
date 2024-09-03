@@ -8,14 +8,12 @@ public class ForceManager : MonoBehaviour
 
     [SerializeField] private BoxCastCollisionManager boxCastCollisionManager;
 
-    public Vector3 CombinedForces(float mass, Vector3 finalVelocity)
+    public Vector3 CombinedForces(float mass, Vector3 finalVelocity, Vector3 thrushForce)
     {
-        Vector3 zConstantForce = ConstantForce(magnitude: 5f, direction: new Vector3(0f, 0f, 1f));
-
         Vector3 gravityForce = ConstantForce(magnitude: 9.81f, direction: new Vector3(0f, -1f, 0f));
 
         // Calculate normal forces individually. One per surface. Then use each to calculate each corresponding static and friction forces. 
-        List<Vector3> normalForces = NormalForces(pushForce: zConstantForce + gravityForce);
+        List<Vector3> normalForces = NormalForces(pushForce: thrushForce + gravityForce);
 
         Vector3 combinedImpactForces = ImpactForces(mass: mass, finalVelocity: finalVelocity);
 
@@ -31,16 +29,16 @@ public class ForceManager : MonoBehaviour
             }
         }
 
-        Vector3 combinedKineticFrictionForces = KineticFrictionForce(pushForce: zConstantForce + gravityForce, finalVelocity: finalVelocity);
+        Vector3 combinedKineticFrictionForces = KineticFrictionForce(pushForce: thrushForce + gravityForce, finalVelocity: finalVelocity);
 
-        Vector3 combinedStaticFrictionForces = StaticFrictionForce(pushForce: zConstantForce + gravityForce, finalVelocity: finalVelocity);
+        Vector3 combinedStaticFrictionForces = StaticFrictionForce(pushForce: thrushForce + gravityForce, finalVelocity: finalVelocity);
 
-        Vector3 result = zConstantForce + gravityForce + combinedNormalForces + combinedImpactForces + combinedKineticFrictionForces + combinedStaticFrictionForces;
+        Vector3 result = thrushForce + gravityForce + combinedNormalForces + combinedImpactForces + combinedStaticFrictionForces + combinedKineticFrictionForces;
 
         return result;
     }
 
-    private Vector3 ConstantForce(float magnitude, Vector3 direction)
+    public Vector3 ConstantForce(float magnitude, Vector3 direction)
     {
         return forceCalculator.ConstantForce(magnitude, direction);
     }

@@ -12,6 +12,11 @@ public class BoxCastCollisionManager : MonoBehaviour
         get { return CollisionInformation.Count > 0; } 
     }
 
+    private void Start()
+    {
+        CollisionInformation = FilteredCollisionInformation();
+    }
+
     public void Update()
     {
         CollisionInformation = FilteredCollisionInformation();
