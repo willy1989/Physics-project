@@ -10,7 +10,7 @@ namespace PhysicsObject
 
         [SerializeField] private ForceManager forceManager;
 
-        [SerializeField] private ConstantForceController constantForceController;
+        [SerializeField] private ThrustForceController thrustForceController;
 
         [SerializeField] private float mass;
 
@@ -22,7 +22,7 @@ namespace PhysicsObject
 
         private void Update()
         {
-            Vector3 combinedForces = forceManager.CombinedForces(mass: mass, finalVelocity: finalVelocity, constantForceController.Force());
+            Vector3 combinedForces = forceManager.CombinedForces(mass: mass, finalVelocity: finalVelocity, thrustForceController.Force());
 
             ApplyForces(combinedForces);
         }

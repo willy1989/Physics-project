@@ -159,7 +159,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kinematicEquations: {fileID: 726597000}
   forceManager: {fileID: 769146454}
-  constantForceController: {fileID: 802508694}
+  thrustForceController: {fileID: 802508694}
   mass: 1
 --- !u!23 &164070650
 MeshRenderer:
@@ -555,7 +555,7 @@ GameObject:
   - component: {fileID: 802508695}
   - component: {fileID: 802508694}
   m_Layer: 0
-  m_Name: Constant force controller - z
+  m_Name: Thrust force controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -573,8 +573,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acfab76e6578d4048a5e47f535ce0da7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  direction: {x: 0, y: 0, z: 1}
-  newtons: 5
+  newtons: 3
+  maxSteeringAngle: 70
+  steeringSpeed: 50
 --- !u!4 &802508695
 Transform:
   m_ObjectHideFlags: 0
