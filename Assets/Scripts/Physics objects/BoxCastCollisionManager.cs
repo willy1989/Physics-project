@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BoxCastCollisionManager : MonoBehaviour
 {
-
     public List<CollisionInformation> CollisionInformation = new List<CollisionInformation>();
 
     public bool IsInContact 
@@ -54,7 +53,6 @@ public class BoxCastCollisionManager : MonoBehaviour
 
         List<CollisionInformation> result = new List<CollisionInformation>();
 
-        // Create collision information data
         foreach (RaycastHit hit in hits)
         {
             NormalForceCollider normalForceCollider = hit.collider.GetComponent<NormalForceCollider>();

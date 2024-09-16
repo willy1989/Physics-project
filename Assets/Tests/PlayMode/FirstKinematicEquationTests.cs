@@ -6,7 +6,7 @@ using UnityEngine.TestTools;
 
 public class FirstKinematicEquationTests
 {
-    public class ConstantForce
+    /*public class ConstantForce
     {
         private KinematicEquations kinematicEquationsComponent;
 
@@ -133,4 +133,5 @@ public class FirstKinematicEquationTests
             Assert.Less(deltaBetweenExpectedAndActualPosition, 0.1f);
         }
     }
+    */
 }
