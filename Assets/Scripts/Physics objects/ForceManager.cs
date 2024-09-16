@@ -17,8 +17,6 @@ public class ForceManager : MonoBehaviour
 
         Vector3 combinedImpactForces = ImpactForces(mass: mass, finalVelocity: finalVelocity);
 
-        // Update final velocity here?
-
         Vector3 combinedNormalForces = Vector3.zero;
 
         if(normalForces != null)
