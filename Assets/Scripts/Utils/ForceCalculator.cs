@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ForceCalculator : MonoBehaviour
+public static class ForceCalculator
 {
-    public Vector3 ConstantForce(float magnitude, Vector3 direction)
+    public static Vector3 ConstantForce(float magnitude, Vector3 direction)
     {
         return direction.normalized * magnitude;
     }
 
-    public Vector3 NormalForce(Vector3 pushForce, Vector3 surfaceNormal)
+    public static Vector3 NormalForce(Vector3 pushForce, Vector3 surfaceNormal)
     {
         float angleRadians = AngleInRadiansFromVectors(pushForce, -surfaceNormal);
 
@@ -25,7 +25,7 @@ public class ForceCalculator : MonoBehaviour
         return result;
     }
 
-    public Vector3 ImpactForce(Vector3 finalVelocity, float mass, Vector3 surfaceNormal)
+    public static Vector3 ImpactForce(Vector3 finalVelocity, float mass, Vector3 surfaceNormal)
     {
         if (finalVelocity.magnitude <= 0)
             return Vector3.zero;
@@ -41,7 +41,7 @@ public class ForceCalculator : MonoBehaviour
         return result;
     }
 
-    public Vector3 KineticFrictionForce(float kineticFrictionCoefficient, Vector3 normalForce, Vector3 movementDirection)
+    public static Vector3 KineticFrictionForce(float kineticFrictionCoefficient, Vector3 normalForce, Vector3 movementDirection)
     {
         float kineticFrictionForceMagnitude = normalForce.magnitude * kineticFrictionCoefficient;
 
@@ -52,7 +52,7 @@ public class ForceCalculator : MonoBehaviour
         return result;
     }
 
-    public Vector3 StaticFrictionForce(float fsMax, Vector3 pushForce)
+    public static Vector3 StaticFrictionForce(float fsMax, Vector3 pushForce)
     {
         if (fsMax >= pushForce.magnitude)
             return -pushForce;
@@ -60,14 +60,14 @@ public class ForceCalculator : MonoBehaviour
             return Vector3.zero;
     }
 
-    public float FsMax(Vector3 normalForce, float staticFrictionCoefficient)
+    public static float FsMax(Vector3 normalForce, float staticFrictionCoefficient)
     {
         float result = (normalForce * staticFrictionCoefficient).magnitude;
 
         return result;
     }
 
-    private float AngleInRadiansFromVectors(Vector3 vectorA, Vector3 vectorB)
+    private static float AngleInRadiansFromVectors(Vector3 vectorA, Vector3 vectorB)
     {
         float dotProduct = vectorA.x * vectorB.x + vectorA.y * vectorB.y + vectorA.z * vectorB.z;
 
