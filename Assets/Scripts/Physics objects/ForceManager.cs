@@ -6,12 +6,19 @@ public class ForceManager : MonoBehaviour
 {
     [SerializeField] private BoxCastCollisionManager boxCastCollisionManager;
 
+    [SerializeField] private List<ConstantForceController> constantsForceControllers = new List<ConstantForceController>();
+
     public Vector3 CombinedForces(float mass, Vector3 finalVelocity, Vector3 thrushForce)
     {
-        Vector3 gravityForce = ConstantForce(magnitude: 9.81f, direction: new Vector3(0f, -1f, 0f));
+        Vector3 combinedConstantForces = Vector3.zero;
+
+        foreach (var constantForceController in constantsForceControllers)
+        {
+            combinedConstantForces += constantForceController.ConstantForce;
+        }
 
         // Calculate normal forces individually. One per surface. Then use each to calculate each corresponding static and friction forces. 
-        List<Vector3> normalForces = NormalForces(pushForce: thrushForce + gravityForce);
+        List<Vector3> normalForces = NormalForces(pushForce: combinedConstantForces + thrushForce);
 
         Vector3 combinedImpactForces = ImpactForces(mass: mass, finalVelocity: finalVelocity);
 
@@ -25,11 +32,11 @@ public class ForceManager : MonoBehaviour
             }
         }
 
-        Vector3 combinedKineticFrictionForces = KineticFrictionForce(pushForce: thrushForce + gravityForce, finalVelocity: finalVelocity);
+        Vector3 combinedKineticFrictionForces = KineticFrictionForce(pushForce: combinedConstantForces + thrushForce, finalVelocity: finalVelocity);
 
-        Vector3 combinedStaticFrictionForces = StaticFrictionForce(pushForce: thrushForce + gravityForce, finalVelocity: finalVelocity);
+        Vector3 combinedStaticFrictionForces = StaticFrictionForce(pushForce: combinedConstantForces + thrushForce, finalVelocity: finalVelocity);
 
-        Vector3 result = thrushForce + gravityForce + combinedNormalForces + combinedImpactForces + combinedStaticFrictionForces + combinedKineticFrictionForces;
+        Vector3 result = combinedConstantForces + thrushForce + combinedNormalForces + combinedImpactForces + combinedStaticFrictionForces + combinedKineticFrictionForces;
 
         return result;
     }
