@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KinematicEquations : MonoBehaviour
+public static class KinematicEquations
 {
     // First kinematic equation: vf = vi + a*t
 
-    public float FinalVelocity_1(float initialVelocity, float acceleration, float deltaTime)
+    public static float FinalVelocity_1(float initialVelocity, float acceleration, float deltaTime)
     {
         if(deltaTime< 0.0f) 
         { 
@@ -18,7 +18,7 @@ public class KinematicEquations : MonoBehaviour
         return result;
     }
 
-    public float InitialVelocity_1(float finalVelocity, float acceleration, float deltaTime)
+    public static float InitialVelocity_1(float finalVelocity, float acceleration, float deltaTime)
     {
         if (deltaTime < 0.0f)
         {
@@ -30,7 +30,7 @@ public class KinematicEquations : MonoBehaviour
         return result;
     }
 
-    public float Acceleration_1(float initialVelocity, float finalVelocity, float deltaTime)
+    public static float Acceleration_1(float initialVelocity, float finalVelocity, float deltaTime)
     {
         if (deltaTime < 0.0f)
         {
@@ -42,7 +42,7 @@ public class KinematicEquations : MonoBehaviour
         return result;
     }
 
-    public float DeltaTime_1(float initialVelocity, float finalVelocity, float acceleration)
+    public static float DeltaTime_1(float initialVelocity, float finalVelocity, float acceleration)
     {
         float result = (finalVelocity - initialVelocity) / acceleration;
 
@@ -57,14 +57,14 @@ public class KinematicEquations : MonoBehaviour
 
     // Second kinematic equation: deltaX = 1/2 * (vf + vi) * t 
 
-    public float DeltaX_2(float finalVelocity, float initialVelocity, float deltaTime)
+    public static float DeltaX_2(float finalVelocity, float initialVelocity, float deltaTime)
     {
         float result = ((finalVelocity + initialVelocity) / 2) * deltaTime;
 
         return result;
     }
 
-    public float DeltaTime_2(float deltaX, float finalVelocity, float initialVelocity)
+    public static float DeltaTime_2(float deltaX, float finalVelocity, float initialVelocity)
     {
         float result = deltaX / (finalVelocity + initialVelocity) / 2;
 
@@ -73,7 +73,7 @@ public class KinematicEquations : MonoBehaviour
 
     // Third kinematic equation: deltaX = vi * t + 1/2 * a*t²
 
-    public float Acceleration_3(float initialVelocity, float deltaX, float deltaTime)
+    public static float Acceleration_3(float initialVelocity, float deltaX, float deltaTime)
     {
         float result = 2f * (deltaX - initialVelocity * deltaTime) / (deltaTime * deltaTime);
 

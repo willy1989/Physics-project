@@ -6,8 +6,6 @@ namespace PhysicsObject
 {
     public class PhysicsObject : MonoBehaviour
     {
-        [SerializeField] private KinematicEquations kinematicEquations;
-
         [SerializeField] private ForceManager forceManager;
 
         [SerializeField] private ThrustForceController thrustForceController;
@@ -42,9 +40,9 @@ namespace PhysicsObject
 
         private Vector3 ComputedFinalVelocity(Vector3 initialVelocity, Vector3 acceleration)
         {
-            float finalVelocityX = kinematicEquations.FinalVelocity_1(initialVelocity.x, acceleration.x, Time.deltaTime);
-            float finalVelocityY = kinematicEquations.FinalVelocity_1(initialVelocity.y, acceleration.y, Time.deltaTime);
-            float finalVelocityZ = kinematicEquations.FinalVelocity_1(initialVelocity.z, acceleration.z, Time.deltaTime);
+            float finalVelocityX = KinematicEquations.FinalVelocity_1(initialVelocity.x, acceleration.x, Time.deltaTime);
+            float finalVelocityY = KinematicEquations.FinalVelocity_1(initialVelocity.y, acceleration.y, Time.deltaTime);
+            float finalVelocityZ = KinematicEquations.FinalVelocity_1(initialVelocity.z, acceleration.z, Time.deltaTime);
 
             Vector3 result = new Vector3(finalVelocityX, finalVelocityY, finalVelocityZ);
 
@@ -53,9 +51,9 @@ namespace PhysicsObject
 
         private Vector3 Displacement(Vector3 initialVelocity, Vector3 finalVelocity)
         {
-            float displacementX = kinematicEquations.DeltaX_2(finalVelocity.x, initialVelocity.x, Time.deltaTime);
-            float displacementY = kinematicEquations.DeltaX_2(finalVelocity.y, initialVelocity.y, Time.deltaTime);
-            float displacementZ = kinematicEquations.DeltaX_2(finalVelocity.z, initialVelocity.z, Time.deltaTime);
+            float displacementX = KinematicEquations.DeltaX_2(finalVelocity.x, initialVelocity.x, Time.deltaTime);
+            float displacementY = KinematicEquations.DeltaX_2(finalVelocity.y, initialVelocity.y, Time.deltaTime);
+            float displacementZ = KinematicEquations.DeltaX_2(finalVelocity.z, initialVelocity.z, Time.deltaTime);
 
             Vector3 result = new Vector3(displacementX, displacementY, displacementZ);
 
