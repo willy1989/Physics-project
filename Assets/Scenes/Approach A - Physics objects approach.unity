@@ -136,8 +136,6 @@ GameObject:
   - component: {fileID: 164070650}
   - component: {fileID: 164070649}
   - component: {fileID: 164070656}
-  - component: {fileID: 164070654}
-  - component: {fileID: 164070653}
   m_Layer: 0
   m_Name: Physics object
   m_TagString: Untagged
@@ -158,8 +156,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   forceManager: {fileID: 769146454}
-  thrustForceController: {fileID: 802508694}
-  mass: 1
+  mass: 10
 --- !u!23 &164070650
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -227,35 +224,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &164070653
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 164070648}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 1
---- !u!65 &164070654
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 164070648}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &164070656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -483,6 +451,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boxCastCollisionManager: {fileID: 164070656}
+  constantsForceControllers:
+  - {fileID: 1898699326}
 --- !u!4 &769146455
 Transform:
   m_ObjectHideFlags: 0
@@ -1057,10 +1027,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1898699324}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d9cc04b6189df64692613c44b0a5240, type: 3}
+  m_Script: {fileID: 11500000, guid: ab3fdef797c5f554d8ed793fb7ac9821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  constantForce: {x: 0, y: -9.81, z: 0}
+  physicsObject: {fileID: 164070649}
 --- !u!1 &2012698458
 GameObject:
   m_ObjectHideFlags: 0

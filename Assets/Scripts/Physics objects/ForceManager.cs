@@ -8,17 +8,24 @@ public class ForceManager : MonoBehaviour
 
     [SerializeField] private List<ConstantForceController> constantsForceControllers = new List<ConstantForceController>();
 
-    public Vector3 CombinedForces(float mass, Vector3 finalVelocity, Vector3 thrushForce)
+    public void SetUp(BoxCastCollisionManager boxCastCollisionManager, List<ConstantForceController> constantsForceControllers)
+    {
+        this.boxCastCollisionManager = boxCastCollisionManager;
+        this.constantsForceControllers = constantsForceControllers;
+    }
+
+
+    public Vector3 CombinedForces(float mass, Vector3 finalVelocity)
     {
         Vector3 combinedConstantForces = Vector3.zero;
 
         foreach (var constantForceController in constantsForceControllers)
         {
-            combinedConstantForces += constantForceController.ConstantForce;
+            combinedConstantForces += constantForceController.ConstantForce();
         }
 
         // Calculate normal forces individually. One per surface. Then use each to calculate each corresponding static and friction forces. 
-        List<Vector3> normalForces = NormalForces(pushForce: combinedConstantForces + thrushForce);
+        List<Vector3> normalForces = NormalForces(pushForce: combinedConstantForces);
 
         Vector3 combinedImpactForces = ImpactForces(mass: mass, finalVelocity: finalVelocity);
 
@@ -32,11 +39,11 @@ public class ForceManager : MonoBehaviour
             }
         }
 
-        Vector3 combinedKineticFrictionForces = KineticFrictionForce(pushForce: combinedConstantForces + thrushForce, finalVelocity: finalVelocity);
+        Vector3 combinedKineticFrictionForces = KineticFrictionForce(pushForce: combinedConstantForces, finalVelocity: finalVelocity);
 
-        Vector3 combinedStaticFrictionForces = StaticFrictionForce(pushForce: combinedConstantForces + thrushForce, finalVelocity: finalVelocity);
+        Vector3 combinedStaticFrictionForces = StaticFrictionForce(pushForce: combinedConstantForces, finalVelocity: finalVelocity);
 
-        Vector3 result = combinedConstantForces + thrushForce + combinedNormalForces + combinedImpactForces + combinedStaticFrictionForces + combinedKineticFrictionForces;
+        Vector3 result = combinedConstantForces + combinedNormalForces + combinedImpactForces + combinedStaticFrictionForces + combinedKineticFrictionForces;
 
         return result;
     }
