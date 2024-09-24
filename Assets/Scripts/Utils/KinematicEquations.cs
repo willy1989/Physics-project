@@ -49,7 +49,7 @@ public static class KinematicEquations
         if (result < 0.0f)
         {
             throw new ArgumentException("The return value cannot be negative. " +
-                                        "Negative time makes not sense.");
+                                        "Negative time makes no sense.");
         }
 
         return result;
