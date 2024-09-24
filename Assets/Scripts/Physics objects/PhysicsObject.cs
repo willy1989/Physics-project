@@ -20,6 +20,9 @@ namespace PhysicsObject
 
         private void Update()
         {
+            if (forceManager == null)
+                return;
+
             Vector3 combinedForces = forceManager.CombinedForces(mass: mass, finalVelocity: finalVelocity);
 
             ApplyForces(combinedForces);
