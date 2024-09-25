@@ -8,8 +8,6 @@ namespace PhysicsObject
     {
         [SerializeField] private ForceManager forceManager;
 
-        //[SerializeField] private ThrustForceController thrustForceController;
-
         [SerializeField] private float mass;
 
         public float Mass => mass;

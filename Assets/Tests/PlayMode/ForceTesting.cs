@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-public class FirstKinematicEquationsTests_PhysicsObject
+public class ForceTesting
 {
-    public class GravityConstantForce
+    public class ConstantForceTesting
     {
         private PhysicsObject.PhysicsObject physicsObject;
 
@@ -114,7 +114,7 @@ public class FirstKinematicEquationsTests_PhysicsObject
         }
 
         [UnityTest]
-        public IEnumerator Move_Object_1kg_Constant_Force_0_0_5_0_In_2_Seconds_From_0_0_0_To_0_0_0_FrameRate_60()
+        public IEnumerator Move_Object_1kg_Constant_Force_0_0_5_In_2_Seconds_From_0_0_0_To_0_0_0_FrameRate_60()
         {
             // Arrange
             BaseArrange(mass: 1, targetFrameRate: 60);
@@ -129,7 +129,7 @@ public class FirstKinematicEquationsTests_PhysicsObject
         }
 
         [UnityTest]
-        public IEnumerator Move_Object_2kg_Constant_Force_0_0_5_0_In_2_Seconds_From_0_0_0_To_0_0_0_FrameRate_30()
+        public IEnumerator Move_Object_2kg_Constant_Force_0_0_5_In_2_Seconds_From_0_0_0_To_0_0_0_FrameRate_30()
         {
             // Arrange
             BaseArrange(mass: 2, targetFrameRate: 30);
