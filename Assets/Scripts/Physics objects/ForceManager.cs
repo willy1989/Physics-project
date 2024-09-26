@@ -4,16 +4,28 @@ using UnityEngine;
 
 public class ForceManager : MonoBehaviour
 {
-    [SerializeField] private ForceCalculator forceCalculator;
-
     [SerializeField] private BoxCastCollisionManager boxCastCollisionManager;
 
-    public Vector3 CombinedForces(float mass, Vector3 finalVelocity, Vector3 thrushForce)
+    [SerializeField] private List<ConstantForceController> constantsForceControllers = new List<ConstantForceController>();
+
+    public void SetUp(BoxCastCollisionManager boxCastCollisionManager, List<ConstantForceController> constantsForceControllers)
     {
-        Vector3 gravityForce = ConstantForce(magnitude: 9.81f, direction: new Vector3(0f, -1f, 0f));
+        this.boxCastCollisionManager = boxCastCollisionManager;
+        this.constantsForceControllers = constantsForceControllers;
+    }
+
+
+    public Vector3 CombinedForces(float mass, Vector3 finalVelocity)
+    {
+        Vector3 combinedConstantForces = Vector3.zero;
+
+        foreach (var constantForceController in constantsForceControllers)
+        {
+            combinedConstantForces += constantForceController.ConstantForce();
+        }
 
         // Calculate normal forces individually. One per surface. Then use each to calculate each corresponding static and friction forces. 
-        List<Vector3> normalForces = NormalForces(pushForce: thrushForce + gravityForce);
+        List<Vector3> normalForces = NormalForces(pushForce: combinedConstantForces);
 
         Vector3 combinedImpactForces = ImpactForces(mass: mass, finalVelocity: finalVelocity);
 
@@ -27,18 +39,18 @@ public class ForceManager : MonoBehaviour
             }
         }
 
-        Vector3 combinedKineticFrictionForces = KineticFrictionForce(pushForce: thrushForce + gravityForce, finalVelocity: finalVelocity);
+        Vector3 combinedKineticFrictionForces = KineticFrictionForce(pushForce: combinedConstantForces, finalVelocity: finalVelocity);
 
-        Vector3 combinedStaticFrictionForces = StaticFrictionForce(pushForce: thrushForce + gravityForce, finalVelocity: finalVelocity);
+        Vector3 combinedStaticFrictionForces = StaticFrictionForce(pushForce: combinedConstantForces, finalVelocity: finalVelocity);
 
-        Vector3 result = thrushForce + gravityForce + combinedNormalForces + combinedImpactForces + combinedStaticFrictionForces + combinedKineticFrictionForces;
+        Vector3 result = combinedConstantForces + combinedNormalForces + combinedImpactForces + combinedStaticFrictionForces + combinedKineticFrictionForces;
 
         return result;
     }
 
     public Vector3 ConstantForce(float magnitude, Vector3 direction)
     {
-        return forceCalculator.ConstantForce(magnitude, direction);
+        return ForceCalculator.ConstantForce(magnitude, direction);
     }
 
     private List<Vector3> NormalForces(Vector3 pushForce)
@@ -50,7 +62,7 @@ public class ForceManager : MonoBehaviour
 
         foreach (CollisionInformation item in boxCastCollisionManager.CollisionInformation)
         {
-            result.Add(forceCalculator.NormalForce(pushForce: pushForce, surfaceNormal: item.NormalVector));
+            result.Add(ForceCalculator.NormalForce(pushForce: pushForce, surfaceNormal: item.NormalVector));
         }
 
         return result;
@@ -65,7 +77,7 @@ public class ForceManager : MonoBehaviour
 
         foreach (CollisionInformation item in boxCastCollisionManager.CollisionInformation)
         {
-            result += forceCalculator.ImpactForce(finalVelocity: finalVelocity, mass: mass, surfaceNormal: item.NormalVector);
+            result += ForceCalculator.ImpactForce(finalVelocity: finalVelocity, mass: mass, surfaceNormal: item.NormalVector);
   
         }
 
@@ -84,13 +96,13 @@ public class ForceManager : MonoBehaviour
 
         foreach (CollisionInformation item in boxCastCollisionManager.CollisionInformation)
         {
-            Vector3 normalForce = forceCalculator.NormalForce(pushForce: pushForce, surfaceNormal: item.NormalVector);
+            Vector3 normalForce = ForceCalculator.NormalForce(pushForce: pushForce, surfaceNormal: item.NormalVector);
 
             Vector3 effectiveForce = pushForce + normalForce;
 
-            float fsMax = forceCalculator.FsMax(normalForce : normalForce, staticFrictionCoefficient: item.StaticFrictionCoefficient);
+            float fsMax = ForceCalculator.FsMax(normalForce : normalForce, staticFrictionCoefficient: item.StaticFrictionCoefficient);
 
-            Vector3 staticFrictionForce = forceCalculator.StaticFrictionForce(fsMax: fsMax, pushForce: effectiveForce);
+            Vector3 staticFrictionForce = ForceCalculator.StaticFrictionForce(fsMax: fsMax, pushForce: effectiveForce);
 
             result += staticFrictionForce;
         }
@@ -109,11 +121,11 @@ public class ForceManager : MonoBehaviour
 
         foreach(CollisionInformation item in boxCastCollisionManager.CollisionInformation)
         {
-            Vector3 normalForce = forceCalculator.NormalForce(pushForce: cachedPushForce, surfaceNormal: item.NormalVector);
+            Vector3 normalForce = ForceCalculator.NormalForce(pushForce: cachedPushForce, surfaceNormal: item.NormalVector);
 
             cachedPushForce += normalForce;
 
-            Vector3 temp = forceCalculator.KineticFrictionForce(kineticFrictionCoefficient: item.KineticFrictionCoefficient,
+            Vector3 temp = ForceCalculator.KineticFrictionForce(kineticFrictionCoefficient: item.KineticFrictionCoefficient,
                                                                 normalForce: normalForce,
                                                                 movementDirection: finalVelocity);
 

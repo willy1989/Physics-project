@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BoxCastCollisionManager : MonoBehaviour
 {
-
     public List<CollisionInformation> CollisionInformation = new List<CollisionInformation>();
 
     public bool IsInContact 
