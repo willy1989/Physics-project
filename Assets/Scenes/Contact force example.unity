@@ -1750,12 +1750,12 @@ MonoBehaviour:
   m_text: '- Constant forward force
 
 
-    - Gravity force
+    - Gravity
 
 
-    - Contact forces
-    from wall and floor. They are both perpendicular to the physics object. So it
-    doesn''t slide againt them.
+    - Contact forces from wall
+    and floor. They are both perpendicular to the physics object. So it doesn''t
+    slide againt them.
 
 '
   m_isRightToLeft: 0
