@@ -45,10 +45,10 @@ The force manager computes all the forces and combines them into a single Vector
 
 This library is structured around the 4 kinematic equations. 
 
-$$v = v_0 + at$$
-$$x = v_0 t + \frac{1}{2} a t^2$$
-$$v^2 = v_0^2 + 2ax$$
-$$x = \frac{(v + v_0)}{2} t$$
+v = v₀ + at
+x = v₀t + (1/2)at²
+v² = v₀² + 2ax
+x = (v + v₀)/2 * t
 
 Each equation is broken down into several functions that have different input and output. The idea is to have every form of each equation available.
 
